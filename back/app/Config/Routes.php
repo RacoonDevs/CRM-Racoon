@@ -19,6 +19,7 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultController('UsersController');
+$routes->setDefaultController('Auth');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -35,6 +36,9 @@ $routes->set404Override();
  */
 
 // We get a performance increase by specifying the default
+//Auth
+$routes->post('auth/login', 'Auth::login');
+
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 

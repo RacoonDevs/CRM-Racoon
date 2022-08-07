@@ -13,9 +13,8 @@ class UsersController extends BaseController
         $db = \Config\Database::connect();
         $query   = $db->query("SELECT * FROM sys_users");
         $this->content['users'] = $query->getResultArray();
-        $this->content['data'] = "Respondiendo";
-        return $this->response->setJSON($this->content);
-    
+        $this->response->setJSON($this->content);
+        $this->response->send();
     }
 
     public function create()
@@ -28,7 +27,7 @@ class UsersController extends BaseController
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
-                'password' => $request["password"],
+                'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
                 'created_by' => $request["created_by"],
                 'updated_at' => null,
@@ -44,8 +43,8 @@ class UsersController extends BaseController
             $this->content['errors'] = $e;
         }
         
-        return $this->response->setJSON($this->content);
-    
+        $this->response->setJSON($this->content);
+        $this->response->send();
     }
     public function update($id)
     {
@@ -57,7 +56,7 @@ class UsersController extends BaseController
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
-                'password' => $request["password"],
+                'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
                 'created_by' => $request["created_by"],
                 'updated_at' => date("Y-m-d H:i:s"),
@@ -72,7 +71,8 @@ class UsersController extends BaseController
         } catch (Exception $e) {
             $this->content['errors'] = $e;
         }
-        return $this->response->setJSON($this->content);
+        $this->response->setJSON($this->content);
+        $this->response->send();
     
     }
     public function disbaleUser($id)
@@ -96,7 +96,7 @@ class UsersController extends BaseController
         } catch (Exception $e) {
             $this->content['errors'] = $e;
         }
-        return $this->response->setJSON($this->content);
-    
+        $this->response->setJSON($this->content);
+        $this->response->send();
     }
 }

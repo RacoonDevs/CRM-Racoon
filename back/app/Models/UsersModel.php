@@ -15,5 +15,12 @@ class UsersModel extends Model
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $db;
+    protected $validationRules = [
+        'email'        => 'required|valid_email|is_unique[sys_users.email]',
+    ];
+    protected $validationMessages = [
+        'email' => [
+            'is_unique' => 'Sorry. That email has already been taken. Please choose another.',
+        ],
+    ];
 }
