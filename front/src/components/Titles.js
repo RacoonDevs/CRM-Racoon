@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+
 export const H1 = ({ text, color, size }) => {
   const Header = styled.h1`
     color: ${color ? color : "#000"};
