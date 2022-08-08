@@ -7,7 +7,7 @@ const ContainerForm = ({ children }) => {
 
 export default ContainerForm;
 
-const Form = styled.form`
+const Form = styled.div`
   max-width: 500px;
   min-width: 300px;
   width: 50%;
