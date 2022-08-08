@@ -20,7 +20,8 @@ const Login = () => {
   };
 
   const auth = () => {
-    const url = "http://localhost:8080/auth/login";
+    navigate("/dashboard");
+    // const url = "http://localhost:8080/auth/login";
     // fetch(url, {
     //   method: "POST",
     //   headers: {
@@ -33,20 +34,20 @@ const Login = () => {
     //     console.log("Failed to login", err);
     //     setisError(true);
     //   });
-    axios
-      .post(url, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        data,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    // axios
+    //   .post(url, {
+    //     headers: {
+    //       "Access-Control-Allow-Origin": "*",
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //     data,
+    //   })
+    //   .then(function (response) {
+    //     console.log("funciona", response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error detectado", error);
+    //   });
   };
 
   return (
