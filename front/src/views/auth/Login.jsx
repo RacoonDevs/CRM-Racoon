@@ -1,41 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AccountContext } from "../../AppContext/AppProvider";
 import { useNavigate } from "react-router-dom";
-import qs from "qs";
 import ContainerForm from "../../components/containers/ContainerForm";
 import TextInputAuth from "../../components/inputs/TextInputAuth";
 import ContainerAuth from "../../components/containers/ContainerAuth";
 import BasicButton from "../../components/buttons/BasicButton";
 import { H1 } from "../../components/Titles";
 import Logo from "../../assets/img/Logo_Blanco.png";
-import axios from "axios";
 import { HashLoader } from "react-spinners";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { authenticate } = useContext(AccountContext);
+
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const data = {
-    email: email,
-    password: pass,
-  };
-
   const auth = () => {
     setIsLoading(true);
     setIsError(false);
-    if (!data.email || !data.password) {
+    if (!email || !pass) {
       setError("Todos los campos son obligatorios");
       setIsError(true);
       setIsLoading(false);
     } else {
-      axios
-        .post("http://localhost:8080/auth/login", qs.stringify(data))
-        .then(({ data }) => {
+      authenticate(email, pass)
+        .then((data) => {
           console.log(data);
           setIsLoading(false);
+          navigate("/dashboard");
         })
         .catch(
           (err) => (
@@ -45,7 +41,6 @@ const Login = () => {
             setIsError(true)
           )
         );
-      navigate("/dashboard");
     }
   };
 
