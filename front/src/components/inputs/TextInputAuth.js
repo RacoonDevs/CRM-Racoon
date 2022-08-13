@@ -41,7 +41,7 @@ const TextInput = styled.input`
   width: ${(props) => (props.width ? props.width : "100%")};
   height: ${(props) => (props.height ? props.height : "30px")};
   padding: 10px 0;
-  font-size: 16px;
+  font-size: 18px;
   color: #fff;
   margin-bottom: 30px;
   outline: none;
@@ -51,7 +51,7 @@ const LabelInput = styled.label`
   top: 0;
   left: 0;
   padding: 10px 0;
-  font-size: 16px;
+  font-size: 18px;
   color: #fff;
   pointer-events: none;
   transition: 0.3s ease-in-out;
