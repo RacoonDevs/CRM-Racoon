@@ -20,6 +20,7 @@ class UsersController extends BaseController
     public function create()
     {
         try{
+            
             $modelUsers = new \App\Models\UsersModel();
             $request = \Config\Services::request()->getPost();
             
@@ -36,6 +37,7 @@ class UsersController extends BaseController
             if ($modelUsers->insert($data)) {
                 $this->content['users'] = "Se insertó correctamente el usuario";
             }else{
+                $this->content['erros'] = $modelUsers->errors();
                 $this->content['users'] = "No se pudo insertar el usuario";
             }
             $this->content['info'] = $data;
@@ -49,6 +51,9 @@ class UsersController extends BaseController
     public function update($id)
     {
         try{
+            $session = \Config\Services::session();
+            var_dump($session->get());
+            die();
             $modelUsers = new \App\Models\UsersModel();
             $request = \Config\Services::request()->getPost();
             
@@ -58,7 +63,7 @@ class UsersController extends BaseController
                 'email' => $request["email"],
                 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'created_by' => $request["created_by"],
+                'updated_by' => $request["updated_by"],
                 'updated_at' => date("Y-m-d H:i:s"),
             ];
             
