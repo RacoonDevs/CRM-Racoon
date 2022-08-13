@@ -19,6 +19,7 @@ class Auth extends BaseController
             $array = [
                 'user_name'  => $query->getResultArray()[0]['user_name'],
                 'email'     => $query->getResultArray()[0]['email'],
+                'name' => $query->getResultArray()[0]['name'],
                 'id' => $query->getResultArray()[0]['id'],
                 'status' => true,
             ];
