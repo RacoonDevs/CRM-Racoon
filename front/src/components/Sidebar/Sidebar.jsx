@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import profile from "../../assets/img/profile.jpg";
-import { FaChevronCircleRight, FaLongArrowAltRight } from "react-icons/fa";
+import {
+  FaChevronCircleLeft,
+  FaLongArrowAltRight,
+  FaPowerOff,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
@@ -17,13 +21,13 @@ const Sidebar = ({ children }) => {
       <div
         className={`${
           open ? "w-72" : "w-24"
-        } duration-500 h-screen p-5 pt-8 bg-dark-purple relative drop-shadow-2xl`}
+        } duration-500 h-screen p-5 pt-10 bg-dark-purple relative `}
       >
-        <FaChevronCircleRight
-          className={`absolute cursor-pointer rounded-full
-          -right-3 top-9 w-8 ${!open && "rotate-180"}`}
-          color="37CAE6"
-          size={44}
+        <FaChevronCircleLeft
+          className={`absolute cursor-pointer 
+          -right-3 top-3 w-8 ${!open && "rotate-180"}`}
+          color="white"
+          size={32}
           onClick={() => setOpen(!open)}
         />
         <div
@@ -69,9 +73,23 @@ const Sidebar = ({ children }) => {
             </li>
           ))}
         </ul>
+        <div className="flex text-white font-bold gap-x-5 p-2 pt-3 items-center cursor-pointer rounded-md hover:bg-light-white float">
+          <FaPowerOff size={28} color={"white"} />
+          <p className={`${!open && "hidden"} origin-left duration-200`}>
+            Cerrar sesión
+          </p>
+        </div>
       </div>
-      <div className=" p-7 text-2x1 font-semi-bold flex-1 h-screen bg-light-gray">
-        {children}
+      <div className="flex-1 h-screen bg-light-gray">
+        <div className="text-white text-2xl flex gap-2 h-14 justify-end p-4 items-center bg-gradient-to-l from-blue-500  to-dark-purple ">
+          <img
+            src={require(`../../assets/img/Logo_Blanco.png`)}
+            alt="crm_icon"
+            width={30}
+          />
+          <p className="font-bold">CRM RACOON</p>
+        </div>
+        <div className="p-4">{children}</div>
       </div>
     </div>
   );
