@@ -8,10 +8,6 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const logout = () => {
-  console.log('Hololulu')
-}
-
 const Sidebar = ({ children }) => {
   const { logout } = useContext(AccountContext);
   const navigate = useNavigate();
@@ -24,7 +20,9 @@ const Sidebar = ({ children }) => {
   ];
 
   const sesion = () => {
-    logout().then(() => navigate("/login"));
+    logout()
+      .then(() => navigate("/login"))
+      .catch((err) => console.log(err));
   };
 
   return (

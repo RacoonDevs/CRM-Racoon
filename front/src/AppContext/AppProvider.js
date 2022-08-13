@@ -6,6 +6,7 @@ const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState([]);
+  console.log("userdata", userData);
 
   const authenticate = async (email, pass) =>
     await new Promise((resolve, reject) => {
@@ -23,9 +24,15 @@ const AppProvider = (props) => {
         .catch((err) => reject(err));
     });
 
-  const logout = () => {
-    axios.post("http://localhost:8080/auth/logout").then((data) => {
-      setUserData("");
+  const logout = async () => {
+    await new Promise((resolve, reject) => {
+      axios
+        .post("http://localhost:8080/auth/logout")
+        .then((data) => {
+          setUserData("");
+          resolve(true);
+        })
+        .catch((err) => reject(err));
     });
   };
 
