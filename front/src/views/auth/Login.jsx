@@ -19,6 +19,11 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const autofill = () => {
+    setPass("prueba123");
+    setEmail("raul.belloso.m@gmail.com");
+  };
+
   const auth = () => {
     setIsLoading(true);
     setIsError(false);
@@ -47,7 +52,12 @@ const Login = () => {
   return (
     <ContainerAuth>
       <ContainerForm>
-        <img src={Logo} alt="logo_racoon" width={75} />
+        <img
+          src={Logo}
+          alt="logo_racoon"
+          width={75}
+          onClick={() => autofill()}
+        />
         <H1 text={"Identificate"} color={"#fff"} />
         <TextInputAuth
           type={"mail"}
