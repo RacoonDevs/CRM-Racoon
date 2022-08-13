@@ -20,7 +20,8 @@ class UsersModel extends Model
     ];
     protected $validationMessages = [
         'email' => [
-            'is_unique' => 'Sorry. That email has already been taken. Please choose another.',
+            'is_unique' => 'Lo siento, este email ya esta registrado intenta con otro por favor.',
         ],
     ];
+
 }

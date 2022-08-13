@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import qs from "qs"
 import ContainerForm from "../../components/containers/ContainerForm";
 import TextInputAuth from "../../components/inputs/TextInputAuth";
 import ContainerAuth from "../../components/containers/ContainerAuth";
 import BasicButton from "../../components/buttons/BasicButton";
 import { H1 } from "../../components/Titles";
 import Logo from "../../assets/img/Logo_Blanco.png";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,7 +21,10 @@ const Login = () => {
   };
 
   const auth = () => {
-    navigate("/dashboard");
+    axios.post('http://localhost:8080/auth/login',qs.stringify(data)).then(({ data }) => {
+      console.log(data)
+    })
+    //navigate("/dashboard");
     // const url = "http://localhost:8080/auth/login";
     // fetch(url, {
     //   method: "POST",
