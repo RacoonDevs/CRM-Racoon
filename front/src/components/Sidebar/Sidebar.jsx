@@ -5,6 +5,7 @@ import {
   FaChevronCircleLeft,
   FaLongArrowAltRight,
   FaPowerOff,
+  FaUserCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -42,13 +43,20 @@ const Sidebar = ({ children }) => {
         <div
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          <img
+          {/* <img
             src={profile}
             alt="loco"
             className={` cursor-pointer duration-500 rounded-full`}
             width={40}
             height={40}
-          />
+          /> */}
+          <p>
+            <FaUserCircle
+              size={40}
+              fill={"white"}
+              className={` cursor-pointer duration-500 rounded-full`}
+            />
+          </p>
           <span
             className={` cursor-pointer ${!open && "scale-0"} ${
               open && " transition delay-200 duration-200"
