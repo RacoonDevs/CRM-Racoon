@@ -39,4 +39,13 @@ class Auth extends BaseController
         $this->response->setJSON($this->content);
         $this->response->send();
     }
+
+    public function logout()
+    {
+        $session = \Config\Services::session();
+        $session->remove($session->get());
+        $this->content['sesion'] = $session;
+        $this->response->setJSON($this->content);
+        $this->response->send();
+    }
 }
