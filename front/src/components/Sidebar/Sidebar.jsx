@@ -7,9 +7,9 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const logout = () => {
+/* const logout = () => {
   console.log('Hololulu')
-}
+} */
 
 const Sidebar = ({ children }) => {
   const navigate = useNavigate();
@@ -77,10 +77,19 @@ const Sidebar = ({ children }) => {
             </li>
           ))}
         </ul>
-        <div className="flex text-white font-bold gap-x-5 p-2 pt-3 items-center cursor-pointer rounded-md hover:bg-light-white float">
-          <FaPowerOff size={28} color={"white"} />
-          <p className={`${!open && "hidden"} origin-left duration-200`} onClick={logout}>
-            Cerrar sesión
+        <div className="absolute bottom-0 pb-10 text-white text-left flex flex-col justify-center w-100">
+          <div className="text-md flex justify-center items-center gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white">
+            <p>
+              <FaPowerOff size={28} color={"white"} />
+            </p>
+            <p className={`${!open && "hidden"} origin-left duration-200`}>
+              Logout
+            </p>
+          </div>
+        </div>
+        <div className="absolute bottom-0 p-2 pb-5">
+          <p className={` ${!open && "hidden"} text-xs  text-slate-300`}>
+            RACOON V 1.0.1
           </p>
         </div>
       </div>
