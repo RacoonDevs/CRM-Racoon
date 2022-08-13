@@ -13,7 +13,7 @@ const AppProvider = (props) => {
     if (items) {
       setUserData(items);
     }
-  }, [userData]);
+  }, []);
 
   const authenticate = async (email, pass) =>
     await new Promise((resolve, reject) => {
