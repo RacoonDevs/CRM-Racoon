@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
-  const { logout } = useContext(AccountContext);
+  const { logout, userData } = useContext(AccountContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const Menus = [
@@ -55,7 +55,7 @@ const Sidebar = ({ children }) => {
             }  `}
           >
             <p className={`text-white origin-left font-medium text-xl`}>
-              Raul Belloso
+              {userData ? userData["datos_sesion"].user_name : "Usuario"}
             </p>
             <p
               className={`text-light-blue font-extralight text-xs flex gap-3 items-center  `}

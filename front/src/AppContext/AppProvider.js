@@ -8,6 +8,13 @@ const AppProvider = (props) => {
   const [userData, setUserData] = useState([]);
   console.log("userdata", userData);
 
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("sesion"));
+    if (items) {
+      setUserData(items);
+    }
+  }, [userData]);
+
   const authenticate = async (email, pass) =>
     await new Promise((resolve, reject) => {
       const data = {
@@ -19,6 +26,7 @@ const AppProvider = (props) => {
         .post("http://localhost:8080/auth/login", qs.stringify(data))
         .then(({ data }) => {
           setUserData(data);
+          localStorage.setItem("sesion", JSON.stringify(data));
           resolve(data);
         })
         .catch((err) => reject(err));
@@ -30,6 +38,7 @@ const AppProvider = (props) => {
         .post("http://localhost:8080/auth/logout")
         .then((data) => {
           setUserData("");
+          localStorage.removeItem("sesion");
           resolve(true);
         })
         .catch((err) => reject(err));
