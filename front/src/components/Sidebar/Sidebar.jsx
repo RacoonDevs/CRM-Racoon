@@ -7,6 +7,10 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+const logout = () => {
+  console.log('Hololulu')
+}
+
 const Sidebar = ({ children }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
@@ -75,7 +79,7 @@ const Sidebar = ({ children }) => {
         </ul>
         <div className="flex text-white font-bold gap-x-5 p-2 pt-3 items-center cursor-pointer rounded-md hover:bg-light-white float">
           <FaPowerOff size={28} color={"white"} />
-          <p className={`${!open && "hidden"} origin-left duration-200`}>
+          <p className={`${!open && "hidden"} origin-left duration-200`} onClick={logout}>
             Cerrar sesión
           </p>
         </div>
