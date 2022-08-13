@@ -23,8 +23,14 @@ const AppProvider = (props) => {
         .catch((err) => reject(err));
     });
 
+  const logout = () => {
+    axios.post("http://localhost:8080/auth/logout").then((data) => {
+      setUserData("");
+    });
+  };
+
   return (
-    <AccountContext.Provider value={{ authenticate, userData }}>
+    <AccountContext.Provider value={{ authenticate, userData, logout }}>
       {props.children}
     </AccountContext.Provider>
   );

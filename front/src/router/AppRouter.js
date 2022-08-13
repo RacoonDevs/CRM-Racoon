@@ -49,11 +49,11 @@ const AuthRoutes = () => {
     <>
       <Sidebar>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
           <Route path="/usuarios" element={<Users />} />
+          <Route path="*" element={<Dashboard />} />
         </Routes>
       </Sidebar>
     </>

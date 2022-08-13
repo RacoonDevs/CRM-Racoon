@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AccountContext } from "../../AppContext/AppProvider";
 import profile from "../../assets/img/profile.jpg";
 import {
   FaChevronCircleLeft,
@@ -8,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
+  const { logout } = useContext(AccountContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const Menus = [
@@ -16,6 +18,11 @@ const Sidebar = ({ children }) => {
     { title: "Tareas", src: "task-list", url: "/tareas" },
     { title: "Usuarios", src: "users", url: "/usuarios" },
   ];
+
+  const sesion = () => {
+    logout().then(() => navigate("/login"));
+  };
+
   return (
     <div className="flex">
       <div
@@ -73,7 +80,10 @@ const Sidebar = ({ children }) => {
             </li>
           ))}
         </ul>
-        <div className="absolute bottom-0 pb-10 text-white text-left flex flex-col justify-center w-100">
+        <div
+          onClick={() => sesion()}
+          className="absolute bottom-0 pb-10 text-white text-left flex flex-col justify-center w-100"
+        >
           <div className="text-md flex justify-center items-center gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white">
             <p>
               <FaPowerOff size={28} color={"white"} />
