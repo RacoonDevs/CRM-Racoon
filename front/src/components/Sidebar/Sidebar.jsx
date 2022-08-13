@@ -55,7 +55,7 @@ const Sidebar = ({ children }) => {
             }  `}
           >
             <p className={`text-white origin-left font-medium text-xl`}>
-              {userData ? userData["datos_sesion"].user_name : "Usuario"}
+              {userData ? userData["datos_sesion"].name : "Usuario"}
             </p>
             <p
               className={`text-light-blue font-extralight text-xs flex gap-3 items-center  `}
