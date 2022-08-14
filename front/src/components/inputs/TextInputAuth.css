@@ -1,6 +1,6 @@
 input:focus ~ label,
 input:valid ~ label {
-  top: -15px;
+  top: -20px;
   font-size: 12px;
   color: #03a9f4;
 }

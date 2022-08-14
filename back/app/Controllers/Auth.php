@@ -19,6 +19,7 @@ class Auth extends BaseController
             $array = [
                 'user_name'  => $query->getResultArray()[0]['user_name'],
                 'email'     => $query->getResultArray()[0]['email'],
+                'name' => $query->getResultArray()[0]['name'],
                 'id' => $query->getResultArray()[0]['id'],
                 'status' => true,
             ];
@@ -36,6 +37,15 @@ class Auth extends BaseController
         } */
         $this->content['datos_sesion'] = $session->get();
         $this->content['sesion'] = $login;
+        $this->response->setJSON($this->content);
+        $this->response->send();
+    }
+
+    public function logout()
+    {
+        $session = \Config\Services::session();
+        $session->remove($session->get());
+        $this->content['sesion'] = $session;
         $this->response->setJSON($this->content);
         $this->response->send();
     }

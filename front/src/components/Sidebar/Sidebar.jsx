@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AccountContext } from "../../AppContext/AppProvider";
 import profile from "../../assets/img/profile.jpg";
 import {
   FaChevronCircleLeft,
   FaLongArrowAltRight,
   FaPowerOff,
+  FaUserCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
+  const { logout, userData } = useContext(AccountContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const Menus = [
@@ -16,6 +19,13 @@ const Sidebar = ({ children }) => {
     { title: "Tareas", src: "task-list", url: "/tareas" },
     { title: "Usuarios", src: "users", url: "/usuarios" },
   ];
+
+  const sesion = () => {
+    logout()
+      .then(() => navigate("/login"))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div className="flex">
       <div
@@ -33,20 +43,27 @@ const Sidebar = ({ children }) => {
         <div
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          <img
+          {/* <img
             src={profile}
             alt="loco"
             className={` cursor-pointer duration-500 rounded-full`}
             width={40}
             height={40}
-          />
+          /> */}
+          <p>
+            <FaUserCircle
+              size={40}
+              fill={"white"}
+              className={` cursor-pointer duration-500 rounded-full`}
+            />
+          </p>
           <span
             className={` cursor-pointer ${!open && "scale-0"} ${
               open && " transition delay-200 duration-200"
             }  `}
           >
             <p className={`text-white origin-left font-medium text-xl`}>
-              Raul Belloso
+              {userData ? userData["datos_sesion"].name : "Usuario"}
             </p>
             <p
               className={`text-light-blue font-extralight text-xs flex gap-3 items-center  `}
@@ -73,10 +90,22 @@ const Sidebar = ({ children }) => {
             </li>
           ))}
         </ul>
-        <div className="flex text-white font-bold gap-x-5 p-2 pt-3 items-center cursor-pointer rounded-md hover:bg-light-white float">
-          <FaPowerOff size={28} color={"white"} />
-          <p className={`${!open && "hidden"} origin-left duration-200`}>
-            Cerrar sesión
+        <div
+          onClick={() => sesion()}
+          className="absolute bottom-0 pb-10 text-white text-left flex flex-col justify-center w-100"
+        >
+          <div className="text-md flex justify-center items-center gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white">
+            <p>
+              <FaPowerOff size={28} color={"white"} />
+            </p>
+            <p className={`${!open && "hidden"} origin-left duration-200`}>
+              Logout
+            </p>
+          </div>
+        </div>
+        <div className="absolute bottom-0 p-2 pb-5">
+          <p className={` ${!open && "hidden"} text-xs  text-slate-300`}>
+            RACOON V 1.0.1
           </p>
         </div>
       </div>
