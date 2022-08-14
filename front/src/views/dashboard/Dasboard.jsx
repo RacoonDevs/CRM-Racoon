@@ -10,12 +10,12 @@ const Dashboard = () => {
   return (
     <Container nameSection={"Dashboard"}>
       <div className="flex gap-5">
-        <div className="flex flex-col gap-y-5 w-1/2">
-          <TextInput placeholder={"Input 1"} />
-          <TextInput placeholder={"Input 2"} />
-          <TextInput placeholder={"Input 3"} />
-          <TextInput placeholder={"Input 4"} />
-          <TextInput placeholder={"Input 5"} />
+        <div className="pt-5 flex flex-col gap-y-5 w-1/2">
+          <TextInput placeholder={"Input 1"} label={"Nombre"} />
+          <TextInput placeholder={"Input 2"} label="Apellido" />
+          <TextInput placeholder={"Input 3"} label="Correo electronico" />
+          <TextInput placeholder={"Input 4"} label="Telefono" />
+          <TextInput placeholder={"Input 5"} label="Domicilio" />
         </div>
         <div className=" w-1/2">
           <TextArea placeholder={"Comentarios"} />

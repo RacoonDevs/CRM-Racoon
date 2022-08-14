@@ -40,6 +40,7 @@ const Sidebar = ({ children }) => {
           onClick={() => setOpen(!open)}
         />
         <div
+          onClick={() => navigate("/perfil")}
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
           <p>

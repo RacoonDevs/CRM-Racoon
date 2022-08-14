@@ -38,6 +38,6 @@ const Button = styled.button`
 `;
 
 const Icon = styled.span`
-  width: ${(props) => (props.size ? props.size : "24px")};
-  height: ${(props) => (props.size ? props.size : "24px")};
+  /* width: ${(props) => (props.size ? props.size : "24px")};
+  height: ${(props) => (props.size ? props.size : "24px")}; */
 `;
