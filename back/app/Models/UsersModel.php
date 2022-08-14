@@ -19,9 +19,9 @@ class UsersModel extends Model
     protected $updatedField  = 'updated_at';
     
     /* protected $validationRules = [
-        'email'        => 'is_unique[sys_users.email]',
-    ]; */
-    /* protected $validationMessages = [
+        'email'        => 'is_unique[sys_users.email,id,{id}]',
+    ];
+    protected $validationMessages = [
         'email' => [
             'is_unique' => 'Lo siento, este email ya esta registrado intenta con otro por favor.',
         ],
