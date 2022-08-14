@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { AccountContext } from "../../AppContext/AppProvider";
-import profile from "../../assets/img/profile.jpg";
 import {
   FaChevronCircleLeft,
   FaLongArrowAltRight,
@@ -43,13 +42,6 @@ const Sidebar = ({ children }) => {
         <div
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          {/* <img
-            src={profile}
-            alt="loco"
-            className={` cursor-pointer duration-500 rounded-full`}
-            width={40}
-            height={40}
-          /> */}
           <p>
             <FaUserCircle
               size={40}
