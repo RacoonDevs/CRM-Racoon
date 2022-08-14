@@ -71,8 +71,8 @@ class UsersController extends BaseController
                 'email' => "is_unique[sys_users.email,id,$id]",
             ]);
             $request = \Config\Services::request()->getPost();
-            //var_dump($dataSession["id"]);
             $data = [
+                'id' => $id,
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
@@ -96,7 +96,7 @@ class UsersController extends BaseController
         $this->response->send();
     
     }
-    public function disbaleUser($id)
+    public function disableUser($id)
     {
         try{
             $session = Services::session();
