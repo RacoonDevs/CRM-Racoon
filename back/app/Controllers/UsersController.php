@@ -66,7 +66,6 @@ class UsersController extends BaseController
     public function update($id)
     {
         try{
-<<<<<<< HEAD
             $session = Services::session();
             $dataSession = $session->get();
             $modelUsers = new UsersModel();
@@ -74,12 +73,6 @@ class UsersController extends BaseController
             $validation->setRules([
                 'email' => 'is_unique[sys_users.email]',
             ]);
-=======
-            $session = \Config\Services::session();
-            // var_dump($session->get());
-            // die();
-            $modelUsers = new \App\Models\UsersModel();
->>>>>>> 3b25e64b5b0d455dda832e73c4fad22d666ae29d
             $request = \Config\Services::request()->getPost();
             //var_dump($dataSession["id"]);
             $data = [
