@@ -18,13 +18,13 @@ class UsersModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     
-    /* protected $validationRules = [
-        'email'        => 'is_unique[sys_users.email]',
-    ]; */
-    /* protected $validationMessages = [
+    protected $validationRules = [
+        'email'        => 'is_unique[sys_users.email,id,{id}]',
+    ];
+    protected $validationMessages = [
         'email' => [
             'is_unique' => 'Lo siento, este email ya esta registrado intenta con otro por favor.',
         ],
-    ]; */
+    ]; 
 
 }
