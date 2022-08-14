@@ -11,3 +11,8 @@ CREATE TABLE `sys_users` (
   `updated_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
+
+
+--INSERT DEFAULT USER
+
+INSERT INTO sys_users (status, user_name, email, password, name, created_by) values (1, "RacoonDevs", "racoon@racoon.mx", "$2y$10$263xVqxSqcn5jEbmepYuZejQERFWe.QLozzpho26olgWSdzX3ziq.", "RacoonDevs" ,1);

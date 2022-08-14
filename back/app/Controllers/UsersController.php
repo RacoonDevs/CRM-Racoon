@@ -52,8 +52,8 @@ class UsersController extends BaseController
     {
         try{
             $session = \Config\Services::session();
-            var_dump($session->get());
-            die();
+            // var_dump($session->get());
+            // die();
             $modelUsers = new \App\Models\UsersModel();
             $request = \Config\Services::request()->getPost();
             
