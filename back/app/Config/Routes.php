@@ -19,6 +19,7 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultController('UsersController');
+$routes->setDefaultController('UsersDetailsController');
 $routes->setDefaultController('Auth');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
@@ -49,6 +50,10 @@ $routes->get('users/getUsers', 'UsersController::getUsers');
 $routes->post('users/create', 'UsersController::create');
 $routes->post('users/update/(:num)', 'UsersController::update/$1');
 $routes->post('users/disbaleUser/(:num)', 'UsersController::disbaleUser/$1');
+
+
+//UsersDetailsController
+$routes->post('usersDetails/create', 'UsersDetailsController::create');
 /*
  * --------------------------------------------------------------------
  * Additional Routing

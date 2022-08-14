@@ -3,17 +3,16 @@
 namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use Config\Services;
-use App\Models\UsersModel;
-class UsersController extends BaseController
+use App\Models\UsersDetailsModel;
+class UsersDetailsController extends BaseController
 {
-    protected $modelName = 'App\Models\Medicine';
     protected $format    = 'json';
     public $content = ['result' => false, 'message' => ['title' => 'Error!', 'content' => 'Internal Server Error.']];
     
-    public function getUsers()
+    public function getUsersDetails()
     {
         $db = \Config\Database::connect();
-        $query   = $db->query("SELECT * FROM sys_users");
+        $query   = $db->query("SELECT * FROM sys_user_details");
         $this->content['users'] = $query->getResultArray();
         $this->response->setJSON($this->content);
         $this->response->send();
@@ -24,36 +23,22 @@ class UsersController extends BaseController
         try{
             $session = Services::session();
             $dataSession = $session->get();
-            $modelUsers = new UsersModel();
-            $validation = \Config\Services::validation();
-            $validation->setRules(
-                [
-                    'email' => 'is_unique[sys_users.email]',
-                ],
-                [
-                    'email' => [
-                        'is_unique' => 'Lo siento, este email ya esta registrado intenta con otro por favor.',
-                    ],
-                ]
-            );
-
+            $modelUsers = new UsersDetailsModel();
             $request = \Config\Services::request()->getPost();
-            
             $data = [
-                'user_name' => $request["user_name"],
-                'status' => $request["status"],
-                'email' => $request["email"],
-                'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
-                'name' => $request["name"],
-                'created_by' => intval($dataSession["id"]),
+                'photo_url' => $request["photo_url"],
+                'addres' => $request["addres"],
+                'phone' => $request["phone"],
+                'created_by' => $dataSession["id"],
                 'updated_at' => null,
+                'id_user' => intval($request["id_user"]),
             ];
             
             if ($modelUsers->insert($data)) {
-                $this->content['users'] = "Se insertó correctamente el usuario";
+                $this->content['users'] = "Detalle agregado correctamente";
             }else{
                 $this->content['erros'] = $modelUsers->errors();
-                $this->content['users'] = "No se pudo insertar el usuario";
+                $this->content['users'] = "No se pudo insertar el detalle";
             }
             $this->content['info'] = $data;
         } catch (Exception $e) {
@@ -66,30 +51,25 @@ class UsersController extends BaseController
     public function update($id)
     {
         try{
-            $session = Services::session();
-            $dataSession = $session->get();
-            $modelUsers = new UsersModel();
-            $validation = \Config\Services::validation();
-            $validation->setRules([
-                'email' => 'is_unique[sys_users.email]',
-            ]);
+            $session = \Config\Services::session();
+            
+            $modelUsers = new \App\Models\UsersModel();
             $request = \Config\Services::request()->getPost();
-            //var_dump($dataSession["id"]);
+            
             $data = [
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
                 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'updated_by' => intval($dataSession["id"]),
+                'updated_by' => $request["updated_by"],
                 'updated_at' => date("Y-m-d H:i:s"),
             ];
             
-            if ($modelUsers->update(intval($id), $data)) {
+            if ($modelUsers->update($id, $data)) {
                 $this->content['users'] = "Se actualizó correctamente el usuario";
             }else{
                 $this->content['users'] = "No se pudo actualizar el usuario";
-                $this->content['errors'] = $modelUsers->error();
             }
             $this->content['info'] = $data;
         } catch (Exception $e) {
@@ -102,15 +82,13 @@ class UsersController extends BaseController
     public function disbaleUser($id)
     {
         try{
-            $session = Services::session();
-            $dataSession = $session->get();
-            $modelUsers = new UsersModel();
+            $modelUsers = new \App\Models\UsersModel();
             $request = \Config\Services::request()->getPost();
             
             $data = [
-                'status' => $request["status"],
+                'status' => 1,
                 'updated_at' => date("Y-m-d H:i:s"),
-                'updated_by' => intval($dataSession["id"]),
+                'updated_by' => 1,
             ];
             
             if ($modelUsers->update($id, $data)) {
