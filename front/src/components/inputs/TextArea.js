@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-const TextInput = ({ width, height, placeholder, type }) => {
+const TextArea = ({ width, height, placeholder, type }) => {
   return (
     <InputText
       type={type}
@@ -12,11 +12,11 @@ const TextInput = ({ width, height, placeholder, type }) => {
   );
 };
 
-export default TextInput;
+export default TextArea;
 
-const InputText = styled.input`
+const InputText = styled.textarea`
   width: ${(props) => props.width ?? "100%"};
-  height: ${(props) => props.height ?? "35px"};
+  height: ${(props) => props.height ?? "125px"};
   border: 0;
   background: #ffffff;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
