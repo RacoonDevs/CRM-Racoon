@@ -26,6 +26,15 @@ class Auth extends BaseController
             
             $session->set($array);
         }else {
+            $array = [
+                'user_name'  => null,
+                'email'     => null,
+                'name' => null,
+                'id' => null,
+                'status' => false,
+            ];
+            
+            $session->set($array);
             $login = false;
         }
 
