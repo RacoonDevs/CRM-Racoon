@@ -38,14 +38,12 @@ const Login = () => {
           setIsLoading(false);
           navigate("/dashboard");
         })
-        .catch(
-          (err) => (
-            console.log("Failed to login", err),
-            setIsLoading(false),
-            setError("El correo y/o la contraseña son incorrectos"),
-            setIsError(true)
-          )
-        );
+        .catch((err) => {
+          console.log("Failed to login", err);
+          setIsLoading(false);
+          setError("El correo y/o la contraseña son incorrectos");
+          setIsError(true);
+        });
     }
   };
 
