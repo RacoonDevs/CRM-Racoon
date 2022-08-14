@@ -5,6 +5,7 @@ import { AlreadyLoginRoute, PrivateRoute } from "./RoutesSettings";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Login from "../views/auth/Login";
 import Dashboard from "../views/dashboard/Dasboard";
+import Profile from "../views/profile/Profile";
 import Projects from "../views/projects/Projects";
 import Tasks from "../views/tasks/Tasks";
 import Users from "../views/users/Users";
@@ -53,6 +54,7 @@ const AuthRoutes = () => {
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
           <Route path="/usuarios" element={<Users />} />
+          <Route path="/perfil" element={<Profile />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Sidebar>

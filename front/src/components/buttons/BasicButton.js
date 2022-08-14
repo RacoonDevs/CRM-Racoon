@@ -19,4 +19,8 @@ const Button = styled.button`
   border-radius: 10px;
   color: #fff;
   font-weight: bold;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    scale: 1.1;
+  }
 `;

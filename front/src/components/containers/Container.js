@@ -1,13 +1,37 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { FaSave } from "react-icons/fa";
 import { H2 } from "../Titles";
+import { ArrowBack } from "../../assets/svg/icons";
+import IconButton from "../buttons/IconButton";
 
-const Container = ({ width, height, bgColor, children, nameSection }) => {
+const Container = ({
+  width,
+  height,
+  bgColor,
+  children,
+  nameSection,
+  _isHeaderButtons,
+}) => {
   return (
-    <Contenedor width={width} height={height} bgColor={bgColor}>
-      {nameSection ? <H2 text={nameSection} /> : ""}
-      {children}
-    </Contenedor>
+    <>
+      {_isHeaderButtons ? (
+        <Content>
+          <IconButton bgColor={"#EA5656"} text={"Volver"}>
+            <ArrowBack size={20} />
+          </IconButton>
+          <IconButton text={"Guardar"}>
+            <FaSave />
+          </IconButton>
+        </Content>
+      ) : (
+        ""
+      )}
+      <Contenedor width={width} height={height} bgColor={bgColor}>
+        <Title>{nameSection ? <H2 text={nameSection} /> : ""}</Title>
+        {children}
+      </Contenedor>
+    </>
   );
 };
 
@@ -19,5 +43,17 @@ const Contenedor = styled.div`
   background-color: ${(props) => (props.bgColor ? props.bgColor : "#fff")};
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 10px 30px 30px;
+`;
+
+const Title = styled.div`
+  padding: 15px 0;
+  width: 50%;
+`;
+const Content = styled.div`
+  padding: 0 0 15px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 `;
