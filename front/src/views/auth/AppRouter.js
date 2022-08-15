@@ -12,7 +12,7 @@ import Users from "../views/users/Users";
 
 const AppRouter = () => {
   const { userData } = useContext(AccountContext);
-
+  console.log(userData);
   return (
     <>
       <Router>

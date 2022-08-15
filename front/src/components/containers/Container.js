@@ -12,15 +12,17 @@ const Container = ({
   children,
   nameSection,
   _isHeaderButtons,
+  _onSave,
+  _onCancel,
 }) => {
   return (
     <>
       {_isHeaderButtons ? (
         <Content>
-          <IconButton bgColor={"#EA5656"} text={"Volver"}>
+          <IconButton bgColor={"#EA5656"} text={"Volver"} onClick={_onCancel}>
             <ArrowBack size={20} />
           </IconButton>
-          <IconButton text={"Guardar"}>
+          <IconButton text={"Guardar"} onClick={_onSave}>
             <FaSave />
           </IconButton>
         </Content>

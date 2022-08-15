@@ -36,7 +36,7 @@ const AppProvider = (props) => {
     await new Promise((resolve, reject) => {
       axios
         .post("http://localhost:8080/auth/logout")
-        .then((data) => {
+        .then(() => {
           setUserData("");
           localStorage.removeItem("sesion");
           resolve(true);

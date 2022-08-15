@@ -2,12 +2,12 @@ import React from "react";
 import styled from "@emotion/styled";
 import "./TextInputAuth.css";
 
-const TextInput = ({ width, height, type, label, value, onChange }) => {
+const CalendarInput = ({ width, height, label, value, onChange }) => {
   return (
     <Container>
       <InputText
         value={value}
-        type={type}
+        type={"date"}
         width={width}
         height={height}
         onChange={onChange}
@@ -18,17 +18,17 @@ const TextInput = ({ width, height, type, label, value, onChange }) => {
   );
 };
 
-export default TextInput;
+export default CalendarInput;
 
 const Container = styled.div`
   width: 100%;
-  min-height: 40px;
+  min-height: 70px;
   position: relative;
 `;
 
 const InputText = styled.input`
   width: ${(props) => props.width ?? "100%"};
-  height: ${(props) => props.height ?? "35px"};
+  height: ${(props) => props.height ?? "70px"};
   border: 0;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
