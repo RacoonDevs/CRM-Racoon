@@ -26,13 +26,17 @@ class UsersController extends BaseController
             $dataSession = $session->get();
             $modelUsers = new UsersModel();
             $validation = \Config\Services::validation();
-            $validation->setRules([
-                'email' => 'is_unique[sys_users.email]',
-            ]);
-
+            $validation->setRules(
+                [
+                    'email' => 'is_unique[sys_users.email]',
+                ],
+                [
+                    'email' => [
+                        'is_unique' => 'Lo siento, este email ya esta registrado intenta con otro por favor.',
+                    ],
+                ]
+            );
             $request = \Config\Services::request()->getPost();
-            
-            
             $data = [
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
@@ -42,14 +46,10 @@ class UsersController extends BaseController
                 'created_by' => intval($dataSession["id"]),
                 'updated_at' => null,
             ];
-            if (!$validation->withRequest($data)->run()) {
-                $validation->getErrors();
-            }
-            die();
             if ($modelUsers->insert($data)) {
                 $this->content['users'] = "Se insertó correctamente el usuario";
             }else{
-                //$this->content['erros'] = $validation->getErrors();
+                $this->content['errors'] = $modelUsers->errors();
                 $this->content['users'] = "No se pudo insertar el usuario";
             }
             $this->content['info'] = $data;

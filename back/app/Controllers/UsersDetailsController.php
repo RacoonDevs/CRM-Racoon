@@ -25,6 +25,21 @@ class UsersDetailsController extends BaseController
             $dataSession = $session->get();
             $modelUsers = new UsersDetailsModel();
             $request = \Config\Services::request()->getPost();
+            $validation = \Config\Services::validation();
+            $validation->setRules(
+                [
+                    /* 'photo_url' => 'is_unique[sys_user_details.photo_url]', */
+                    'phone' => 'is_unique[sys_user_details.phone]',
+                ],
+                [
+                    /* 'photo_url' => [
+                        'is_unique' => 'Lo siento, esta foto ya se encuentra en uso.',
+                    ], */
+                    'phone' => [
+                        'is_unique' => 'Lo siento, este telefono ya se encuentra en uso.',
+                    ],
+                ]
+            );
             $data = [
                 'photo_url' => $request["photo_url"],
                 'addres' => $request["addres"],
@@ -51,30 +66,36 @@ class UsersDetailsController extends BaseController
     public function update($id)
     {
         try{
-            $session = \Config\Services::session();
-            
-            $modelUsers = new \App\Models\UsersModel();
+            $session = Services::session();
+            $dataSession = $session->get();
+            $modelUsers = new UsersDetailsModel();
             $request = \Config\Services::request()->getPost();
-            
+            $validation = \Config\Services::validation();
+            $validation->setRules([
+                /* 'photo_url' => ["is_unique[sys_user_details.photo_url,id,$id]"], */
+                'phone' => "is_unique[sys_user_details.phone,id,$id]",
+            ]);
             $data = [
-                'user_name' => $request["user_name"],
-                'status' => $request["status"],
-                'email' => $request["email"],
-                'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
-                'name' => $request["name"],
-                'updated_by' => $request["updated_by"],
-                'updated_at' => date("Y-m-d H:i:s"),
+                'id' => $id,
+                'photo_url' => $request["photo_url"],
+                'addres' => $request["addres"],
+                'phone' => $request["phone"],
+                'created_by' => $dataSession["id"],
+                'updated_at' => null,
+                'id_user' => intval($request["id_user"]),
             ];
             
-            if ($modelUsers->update($id, $data)) {
-                $this->content['users'] = "Se actualizó correctamente el usuario";
+            if ($modelUsers->update(intval($id),$data)) {
+                $this->content['users'] = "Detalle agregado correctamente";
             }else{
-                $this->content['users'] = "No se pudo actualizar el usuario";
+                $this->content['erros'] = $modelUsers->errors();
+                $this->content['users'] = "No se pudo insertar el detalle";
             }
             $this->content['info'] = $data;
         } catch (Exception $e) {
             $this->content['errors'] = $e;
         }
+        
         $this->response->setJSON($this->content);
         $this->response->send();
     
