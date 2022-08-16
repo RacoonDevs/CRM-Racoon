@@ -49,7 +49,7 @@ const Profile = () => {
       _onCancel={() => navigate(-1)}
       _onSave={saveChanges}
     >
-      <div className=" justify-center gap-x-10 grid grid-cols-1 md:grid-cols-2">
+      <div className=" justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
         <div className=" flex flex-col items-center p-5 gap-3 border-2 rounded-md border-dark">
           <Label text={"Foto de perfil"} size={"16px"} />
           <p>

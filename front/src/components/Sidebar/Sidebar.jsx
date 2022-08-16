@@ -69,7 +69,7 @@ const Sidebar = ({ children }) => {
           {Menus.map((menu, index) => (
             <li
               key={index}
-              className={`text-white text-md flex items-center gap-5  p-2 pt-3 cursor-pointer rounded-md hover:bg-light-white`}
+              className={`text-white text-md flex items-center gap-5 p-2 pt-3 cursor-pointer rounded-md hover:bg-light-white`}
               onClick={() => navigate(`${menu.url}`)}
             >
               <img
@@ -85,20 +85,19 @@ const Sidebar = ({ children }) => {
         </ul>
         <div
           onClick={() => sesion()}
-          className="absolute bottom-0 pb-10 text-white text-left flex flex-col justify-center w-100"
+          className={`absolute w-5/6 text-md flex items-center bottom-10 p-2 gap-5 text-white text-left cursor-pointer rounded-md hover:bg-light-white`}
         >
-          <div className="text-md flex justify-center items-center gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white">
-            <p>
-              <FaPowerOff size={28} color={"white"} />
-            </p>
-            <p className={`${!open && "hidden"} origin-left duration-200`}>
-              Logout
-            </p>
-          </div>
+          {/* <div className=" flex   gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white"> */}
+          <p>
+            <FaPowerOff size={28} color={"white"} />
+          </p>
+          <p className={`${!open && "hidden"} origin-left duration-200`}>
+            Logout
+          </p>
         </div>
         <div className="absolute bottom-0 p-2 pb-5">
           <p className={` ${!open && "hidden"} text-xs  text-slate-300`}>
-            RACOON V 1.0.1
+            RACOON_V1.0
           </p>
         </div>
       </div>
@@ -111,7 +110,7 @@ const Sidebar = ({ children }) => {
           />
           <p className="font-bold">CRM RACOON</p>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="p-4 h-5/6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

@@ -20,8 +20,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const autofill = () => {
-    setPass("prueba123");
-    setEmail("raul.belloso.m@gmail.com");
+    setPass("racoonadmin");
+    setEmail("racoon@racoon.mx");
   };
 
   const auth = () => {
@@ -71,7 +71,8 @@ const Login = () => {
         />
         {isError && <p className="text-red-600 text-sm">{error}</p>}
         {!isLoading && <BasicButton text={"Iniciar sesión"} onClick={auth} />}
-        <HashLoader color={"#9013FE"} size={32} loading={isLoading} />
+        <HashLoader color={"#0063C9"} size={32} loading={isLoading} />
+        {/* <HashLoader color={"#9013FE"} size={32} loading={isLoading} /> */}
       </ContainerForm>
     </ContainerAuth>
   );

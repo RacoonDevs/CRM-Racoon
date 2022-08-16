@@ -1,45 +1,51 @@
-import React, { useContext } from "react";
+import React, { Suspense, useContext, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AccountContext } from "../AppContext/AppProvider";
 import { AlreadyLoginRoute, PrivateRoute } from "./RoutesSettings";
-import Sidebar from "../components/Sidebar/Sidebar";
+import { Loading } from "../components/Loading";
 import Login from "../views/auth/Login";
-import Dashboard from "../views/dashboard/Dasboard";
-import Profile from "../views/profile/Profile";
-import Projects from "../views/projects/Projects";
-import Tasks from "../views/tasks/Tasks";
-import Users from "../views/users/Users";
+const Dashboard = lazy(() => import("../views/dashboard/Dasboard"));
+const Sidebar = lazy(() => import("../components/Sidebar/Sidebar"));
+const Profile = lazy(() => import("../views/profile/Profile"));
+const Projects = lazy(() => import("../views/projects/Projects"));
+const Tasks = lazy(() => import("../views/tasks/Tasks"));
+const Users = lazy(() => import("../views/users/Users"));
+const AddUsers = lazy(() => import("../views/users/CreateUsers"));
 
 const AppRouter = () => {
   const { userData } = useContext(AccountContext);
 
   return (
-    <>
-      <Router>
-        <Routes>
-          {userData.sesion !== true && (
-            <Route
-              path="*"
-              element={
-                <AlreadyLoginRoute status={userData.sesion}>
-                  <Login />
-                </AlreadyLoginRoute>
-              }
-            />
-          )}
-          {userData.sesion === true && (
-            <Route
-              path="*"
-              element={
-                <PrivateRoute status={userData.sesion}>
-                  <AuthRoutes />
-                </PrivateRoute>
-              }
-            />
-          )}
-        </Routes>
-      </Router>
-    </>
+    <Suspense fallback={<Loading />}>
+      {userData.sesion === null ? (
+        <Loading />
+      ) : (
+        <Router>
+          <Routes>
+            {userData.sesion === false && (
+              <Route
+                path="*"
+                element={
+                  <AlreadyLoginRoute status={userData.sesion}>
+                    <Login />
+                  </AlreadyLoginRoute>
+                }
+              />
+            )}
+            {userData.sesion === true && (
+              <Route
+                path="*"
+                element={
+                  <PrivateRoute status={userData.sesion}>
+                    <AuthRoutes />
+                  </PrivateRoute>
+                }
+              />
+            )}
+          </Routes>
+        </Router>
+      )}
+    </Suspense>
   );
 };
 
@@ -54,6 +60,7 @@ const AuthRoutes = () => {
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
           <Route path="/usuarios" element={<Users />} />
+          <Route path="/agregar_usuarios" element={<AddUsers />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>

@@ -41,15 +41,17 @@ class UsersController extends BaseController
                 ]
             );
             $request = \Config\Services::request()->getPost();
+            
             $data = [
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
                 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'created_by' => null,
+                'created_by' => intval($request["created_by"]),
                 'updated_at' => null,
             ];
+            var_dump($data);
             if ($modelUsers->insert($data)) {
                 $modelUsersDetails = new UsersDetailsModel();
                 $validation->setRules(
@@ -70,7 +72,7 @@ class UsersController extends BaseController
                     'photo_url' => null,
                     'addres' => null,
                     'phone' => null,
-                    'created_by' => null,
+                    'created_by' => intval($request["created_by"]),
                     'updated_at' => null,
                     'id_user' => intval($modelUsers->getInsertID()),
                 ];

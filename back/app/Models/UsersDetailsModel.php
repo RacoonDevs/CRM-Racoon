@@ -23,14 +23,14 @@ class UsersDetailsModel extends Model
             'is_unique' => 'Lo siento, el numero de celular debe ser unico.',
         ],
     ]; */
-    protected $beforeInsert = [
-        'insertUserstamp',
-    ];
+    // protected $beforeInsert = [
+    //     'insertUserstamp',
+    // ];
     
 
-    protected $afterUpdate = [
-        'updateUserstamp',
-    ];
+    // protected $afterUpdate = [
+    //     'updateUserstamp',
+    // ];
     
         protected function insertUserstamp(array $data) {
             $user_id = session()->get('id');

@@ -5,7 +5,7 @@ import axios from "axios";
 const AccountContext = createContext();
 
 const AppProvider = (props) => {
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState("");
   console.log("userdata", userData);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const AppProvider = (props) => {
       axios
         .post("http://localhost:8080/auth/logout")
         .then(() => {
-          setUserData("");
+          setUserData({ sesion: false });
           localStorage.removeItem("sesion");
           resolve(true);
         })

@@ -14,6 +14,16 @@ export const updateUser = async (id, data) =>
       .catch((err) => reject(err));
   });
 
+export const createUser = async (data) =>
+  await new Promise((resolve, reject) => {
+    axios
+      .post(`http://localhost:8080/users/create`, qs.stringify(data))
+      .then(({ data }) => {
+        resolve(data);
+      })
+      .catch((err) => reject(err));
+  });
+
 export const getUserData = async (route, data) =>
   await new Promise((resolve, reject) => {
     axios
