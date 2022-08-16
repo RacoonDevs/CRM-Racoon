@@ -23,6 +23,31 @@ class UsersDetailsModel extends Model
             'is_unique' => 'Lo siento, el numero de celular debe ser unico.',
         ],
     ]; */
+    protected $beforeInsert = [
+        'insertUserstamp',
+    ];
+    
+
+    protected $afterUpdate = [
+        'updateUserstamp',
+    ];
+    
+        protected function insertUserstamp(array $data) {
+            $user_id = session()->get('id');
+            if (!empty($user_id) && 
+                !array_key_exists('created_by', $data) && !array_key_exists('updated_by', $data)) {
+                $data['data']['created_by'] = $user_id;
+                $data['data']['updated_by'] = $user_id;
+            }
+            return $data;
+        }
+        protected function updateUserstamp(array $data) {
+            $user_id = session()->get('id');
+            if (!empty($user_id) && !array_key_exists('updated_by', $data)) {
+                $data['data']['updated_by'] = $user_id;
+            }
+            return $data;
+        } 
 
     
 

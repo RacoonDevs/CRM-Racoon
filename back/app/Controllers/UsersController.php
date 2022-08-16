@@ -26,9 +26,8 @@ class UsersController extends BaseController
             $db = \Config\Database::connect();
             $db->transStart();
             $session = Services::session();
-            $dataSession = $session->get();
+            // $dataSession = $session->get();
             $modelUsers = new UsersModel();
-            
             
             $validation = \Config\Services::validation();
             $validation->setRules(
@@ -48,7 +47,7 @@ class UsersController extends BaseController
                 'email' => $request["email"],
                 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'created_by' => intval($dataSession["id"]),
+                'created_by' => null,
                 'updated_at' => null,
             ];
             if ($modelUsers->insert($data)) {
@@ -71,7 +70,7 @@ class UsersController extends BaseController
                     'photo_url' => null,
                     'addres' => null,
                     'phone' => null,
-                    'created_by' => $dataSession["id"],
+                    'created_by' => null,
                     'updated_at' => null,
                     'id_user' => intval($modelUsers->getInsertID()),
                 ];
