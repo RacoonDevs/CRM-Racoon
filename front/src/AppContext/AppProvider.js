@@ -5,7 +5,7 @@ import axios from "axios";
 const AccountContext = createContext();
 
 const AppProvider = (props) => {
-  const [userData, setUserData] = useState("");
+  const [userData, setUserData] = useState({ sesion: false });
   console.log("userdata", userData);
 
   useEffect(() => {

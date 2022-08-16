@@ -8,6 +8,7 @@ import BasicButton from "../../components/buttons/BasicButton";
 import { H1 } from "../../components/Titles";
 import Logo from "../../assets/img/Logo_Blanco.png";
 import { HashLoader } from "react-spinners";
+import PasswordTextAuth from "../../components/inputs/PasswordTextAuth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,10 +19,11 @@ const Login = () => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const autofill = () => {
-    setPass("racoonadmin");
     setEmail("racoon@racoon.mx");
+    setPass("racoonadmin");
   };
 
   const auth = () => {
@@ -35,8 +37,8 @@ const Login = () => {
       authenticate(email, pass)
         .then((data) => {
           console.log(data);
-          setIsLoading(false);
           navigate("/dashboard");
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log("Failed to login", err);
@@ -63,15 +65,16 @@ const Login = () => {
           setValue={setEmail}
           value={email}
         />
-        <TextInputAuth
-          type={"password"}
+        <PasswordTextAuth
           text={"Contraseña"}
           setValue={setPass}
           value={pass}
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
         />
         {isError && <p className="text-red-600 text-sm">{error}</p>}
         {!isLoading && <BasicButton text={"Iniciar sesión"} onClick={auth} />}
-        <HashLoader color={"#0063C9"} size={32} loading={isLoading} />
+        <HashLoader color={"#0063C9"} size={25} loading={isLoading} />
         {/* <HashLoader color={"#9013FE"} size={32} loading={isLoading} /> */}
       </ContainerForm>
     </ContainerAuth>

@@ -5,6 +5,7 @@ import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
+import PasswordInput from "../../components/inputs/PasswordInput";
 
 const CreateUsers = () => {
   const { userData } = useContext(AccountContext);
@@ -13,6 +14,7 @@ const CreateUsers = () => {
   const [isError, setIsError] = useState(true);
   const [error, setError] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({
     user_name: "",
     email: "",
@@ -63,15 +65,19 @@ const CreateUsers = () => {
             value={user.user_name}
             onChange={(e) => setUser({ ...user, user_name: e.target.value })}
           />
-          <TextInput
+          <PasswordInput
             label={"Contraseña"}
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
           />
-          <TextInput
+          <PasswordInput
             label={"Repetir Contraseña"}
             value={repeatPassword}
             onChange={(e) => setRepeatPassword(e.target.value)}
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
           />
         </div>
         <div className="flex justify-center">
