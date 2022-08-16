@@ -4,6 +4,7 @@ namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use Config\Services;
 use App\Models\UsersModel;
+use App\Models\UsersDetailsModel;
 class UsersController extends BaseController
 {
     protected $modelName = 'App\Models\Medicine';
@@ -22,9 +23,12 @@ class UsersController extends BaseController
     public function create()
     {
         try{
+            $db = \Config\Database::connect();
+            $db->transStart();
             $session = Services::session();
-            $dataSession = $session->get();
+            // $dataSession = $session->get();
             $modelUsers = new UsersModel();
+            
             $validation = \Config\Services::validation();
             $validation->setRules(
                 [
@@ -36,26 +40,58 @@ class UsersController extends BaseController
                     ],
                 ]
             );
-
             $request = \Config\Services::request()->getPost();
-            
             $data = [
                 'user_name' => $request["user_name"],
                 'status' => $request["status"],
                 'email' => $request["email"],
                 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'created_by' => intval($dataSession["id"]),
+                'created_by' => null,
                 'updated_at' => null,
             ];
-            
             if ($modelUsers->insert($data)) {
-                $this->content['users'] = "Se insertó correctamente el usuario";
+                $modelUsersDetails = new UsersDetailsModel();
+                $validation->setRules(
+                    [
+                        /* 'photo_url' => 'is_unique[sys_user_details.photo_url]', */
+                        'phone' => 'is_unique[sys_user_details.phone]',
+                    ],
+                    [
+                        /* 'photo_url' => [
+                            'is_unique' => 'Lo siento, esta foto ya se encuentra en uso.',
+                        ], */
+                        'phone' => [
+                            'is_unique' => 'Lo siento, este telefono ya se encuentra en uso.',
+                        ],
+                    ]
+                );
+                $dataDetails = [
+                    'photo_url' => null,
+                    'addres' => null,
+                    'phone' => null,
+                    'created_by' => null,
+                    'updated_at' => null,
+                    'id_user' => intval($modelUsers->getInsertID()),
+                ];
+                
+                if ($modelUsersDetails->insert($dataDetails)) {
+                    $db->transComplete();
+                    if ($db->transStatus() == false) {
+                        $this->content['errors_users'] = $modelUsers->errors();
+                        $this->content['errors_users:details'] = $modelUsers->errors();
+                        $db->transRollback();
+                    }else{
+                        $this->content['users'] = "Usuario registrado correctamente.";
+                        $db->transCommit();
+                    }
+                }
+                
             }else{
-                $this->content['erros'] = $modelUsers->errors();
-                $this->content['users'] = "No se pudo insertar el usuario";
+                $this->content['errors_users'] = $modelUsers->errors();
             }
             $this->content['info'] = $data;
+            $db->close();
         } catch (Exception $e) {
             $this->content['errors'] = $e;
         }
@@ -71,7 +107,7 @@ class UsersController extends BaseController
             $modelUsers = new UsersModel();
             $validation = \Config\Services::validation();
             $validation->setRules([
-                'email' => 'is_unique[sys_users.email]',
+                'email' => "is_unique[sys_users.email,id,$id]",
             ]);
             $request = \Config\Services::request()->getPost();
             $data = [

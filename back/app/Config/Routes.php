@@ -54,6 +54,9 @@ $routes->post('users/disbaleUser/(:num)', 'UsersController::disbaleUser/$1');
 
 //UsersDetailsController
 $routes->post('usersDetails/create', 'UsersDetailsController::create');
+$routes->post('usersDetails/update/(:num)', 'UsersDetailsController::update/$1');
+$routes->get('usersDetails/getUsersDetails', 'UsersDetailsController::getUsersDetails');
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
