@@ -14,7 +14,7 @@ const AddUsers = lazy(() => import("../views/users/CreateUsers"));
 
 const AppRouter = () => {
   const { userData } = useContext(AccountContext);
-  console.log(userData);
+
   return (
     <Suspense fallback={<Loading />}>
       {userData.sesion === null ? (

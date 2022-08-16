@@ -51,7 +51,6 @@ class UsersController extends BaseController
                 'created_by' => intval($request["created_by"]),
                 'updated_at' => null,
             ];
-            var_dump($data);
             if ($modelUsers->insert($data)) {
                 $modelUsersDetails = new UsersDetailsModel();
                 $validation->setRules(

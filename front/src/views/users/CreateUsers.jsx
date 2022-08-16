@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
 import PasswordInput from "../../components/inputs/PasswordInput";
+import { HashLoader } from "react-spinners";
 
 const CreateUsers = () => {
   const { userData } = useContext(AccountContext);
-  console.log(userData);
   const navigate = useNavigate();
-  const [isError, setIsError] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -25,19 +25,37 @@ const CreateUsers = () => {
   });
 
   const saveChanges = () => {
-    console.log("before to send: ", user);
-    createUser(user)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log("Failed to create user", err);
-        // setIsLoading(false);
-        setError(
-          "Se ha producido un error al guardar la información intente más tarde."
-        );
-        setIsError(true);
-      });
+    setIsLoading(true);
+    if (!user.email || !user.name || !user.password || !user.user_name) {
+      setError("Todos los campos son obligatorios");
+      setIsLoading(false);
+    } else {
+      if (user.password !== repeatPassword) {
+        setError("Las contraseñas no son iguales");
+        setIsLoading(false);
+      } else {
+        createUser(user)
+          .then((data) => {
+            setError("");
+            setIsLoading(false);
+            console.log(data);
+            if (data.users) {
+              navigate(-1);
+            } else {
+              setError(
+                "Se ha producido un error al guardar la información intente más tarde."
+              );
+            }
+          })
+          .catch((err) => {
+            console.log("Failed to create user", err);
+            setError(
+              "Se ha producido un error al guardar la información intente más tarde."
+            );
+            setIsLoading(false);
+          });
+      }
+    }
   };
 
   return (
@@ -88,11 +106,14 @@ const CreateUsers = () => {
           />
         </div>
       </div>
-      {isError && (
+      {error && (
         <div className="text-center p-5">
           <Label size={"12px"} text={error} color={"#EA5656"} />
         </div>
       )}
+      <span className="flex justify-center">
+        <HashLoader color={"#0063C9"} size={25} loading={isLoading} />
+      </span>
     </Container>
   );
 };
