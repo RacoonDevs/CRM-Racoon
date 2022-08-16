@@ -15,18 +15,14 @@ class UsersDetailsModel extends Model
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $validationRules = [
-        /* 'photo_url'        => 'is_unique[sys_user_details.photo_url, id, {id}]', */
+    /* protected $validationRules = [
         'phone'        => 'is_unique[sys_user_details.phone, id, {id}]',
     ];
     protected $validationMessages = [
-        /* 'photo_url' => [
-            'is_unique' => 'Lo siento, esta url debe de ser unica.',
-        ], */
         'phone' => [
             'is_unique' => 'Lo siento, el numero de celular debe ser unico.',
         ],
-    ];
+    ]; */
 
     
 

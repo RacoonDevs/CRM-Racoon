@@ -4,6 +4,7 @@ namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use Config\Services;
 use App\Models\UsersModel;
+use App\Models\UsersDetailsModel;
 class UsersController extends BaseController
 {
     protected $modelName = 'App\Models\Medicine';
@@ -22,9 +23,13 @@ class UsersController extends BaseController
     public function create()
     {
         try{
+            $db = \Config\Database::connect();
+            $db->transStart();
             $session = Services::session();
             $dataSession = $session->get();
             $modelUsers = new UsersModel();
+            
+            
             $validation = \Config\Services::validation();
             $validation->setRules(
                 [
@@ -47,12 +52,47 @@ class UsersController extends BaseController
                 'updated_at' => null,
             ];
             if ($modelUsers->insert($data)) {
-                $this->content['users'] = "Se insertó correctamente el usuario";
+                $modelUsersDetails = new UsersDetailsModel();
+                $validation->setRules(
+                    [
+                        /* 'photo_url' => 'is_unique[sys_user_details.photo_url]', */
+                        'phone' => 'is_unique[sys_user_details.phone]',
+                    ],
+                    [
+                        /* 'photo_url' => [
+                            'is_unique' => 'Lo siento, esta foto ya se encuentra en uso.',
+                        ], */
+                        'phone' => [
+                            'is_unique' => 'Lo siento, este telefono ya se encuentra en uso.',
+                        ],
+                    ]
+                );
+                $dataDetails = [
+                    'photo_url' => null,
+                    'addres' => null,
+                    'phone' => null,
+                    'created_by' => $dataSession["id"],
+                    'updated_at' => null,
+                    'id_user' => intval($modelUsers->getInsertID()),
+                ];
+                
+                if ($modelUsersDetails->insert($dataDetails)) {
+                    $db->transComplete();
+                    if ($db->transStatus() == false) {
+                        $this->content['errors_users'] = $modelUsers->errors();
+                        $this->content['errors_users:details'] = $modelUsers->errors();
+                        $db->transRollback();
+                    }else{
+                        $this->content['users'] = "Usuario registrado correctamente.";
+                        $db->transCommit();
+                    }
+                }
+                
             }else{
-                $this->content['errors'] = $modelUsers->errors();
-                $this->content['users'] = "No se pudo insertar el usuario";
+                $this->content['errors_users'] = $modelUsers->errors();
             }
             $this->content['info'] = $data;
+            $db->close();
         } catch (Exception $e) {
             $this->content['errors'] = $e;
         }
