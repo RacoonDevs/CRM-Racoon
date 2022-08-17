@@ -25,7 +25,7 @@ const EditUsers = () => {
     email: "",
     name: "",
     status: "",
-    created_by: userData["datos_sesion"].id,
+    updated_by: userData["datos_sesion"].id,
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const EditUsers = () => {
           email: findUser[0].email,
           name: findUser[0].name,
           status: findUser[0].status,
-          created_by: findUser[0].created_by,
+          // created_by: findUser[0].created_by,
         });
       }
     }
@@ -50,8 +50,8 @@ const EditUsers = () => {
       setError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
-      const data = { ...user, password: "123" };
-      console.log("antes de enviar", data);
+      // const data = { ...user, password: "123" };
+      console.log("antes de enviar", user);
       updateUsers(id, user)
         .then((data) => {
           setError("");
