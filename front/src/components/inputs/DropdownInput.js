@@ -1,38 +1,51 @@
 import React from "react";
 import styled from "@emotion/styled";
+import "./TextInputAuth.css";
 
-const TextArea = ({ width, height, label, type, value, onChange }) => {
+const DropdownInput = ({ width, height, label, value, data, onChange }) => {
   return (
     <Container>
       <InputText
-        type={type}
+        value={value}
+        type={""}
         width={width}
         height={height}
-        value={value}
         onChange={onChange}
         required
-      ></InputText>
+      >
+        <Option disabled></Option>
+        {data.map((item, i) => {
+          return (
+            <Option value={i} key={i}>
+              {item}
+            </Option>
+          );
+        })}
+      </InputText>
       {label ? <Label>{label}</Label> : ""}
     </Container>
   );
 };
 
-export default TextArea;
+export default DropdownInput;
 
 const Container = styled.div`
   width: 100%;
   min-height: 40px;
   position: relative;
 `;
-const InputText = styled.textarea`
+
+const InputText = styled.select`
   width: ${(props) => props.width ?? "100%"};
-  height: ${(props) => props.height ?? "125px"};
+  height: ${(props) => props.height ?? "35px"};
   border: 0;
   background: #ffffff;
-  box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
+  font-size: 16px;
   padding: 8px;
 `;
+
 const Label = styled.label`
   color: #58585f;
   font-size: 16px;
@@ -43,4 +56,7 @@ const Label = styled.label`
   padding: 10px 0 10px 10px;
   pointer-events: none;
   transition: 0.3s ease-in-out;
+`;
+const Option = styled.option`
+  color: #58585f;
 `;

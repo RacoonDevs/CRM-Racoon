@@ -110,7 +110,7 @@ const Sidebar = ({ children }) => {
           />
           <p className="font-bold">CRM RACOON</p>
         </div>
-        <div className="p-4 h-5/6 overflow-y-auto">{children}</div>
+        <div className="p-4 h-[90%] overflow-y-auto">{children}</div>
       </div>
     </div>
   );

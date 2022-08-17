@@ -7,6 +7,7 @@ import { createUser } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
+import DropdownInput from "../../components/inputs/DropdownInput";
 
 const CreateUsers = () => {
   const { userData } = useContext(AccountContext);
@@ -20,13 +21,19 @@ const CreateUsers = () => {
     email: "",
     password: "",
     name: "",
-    status: 1,
+    status: "",
     created_by: userData["datos_sesion"].id,
   });
-
+  console.log(user);
   const saveChanges = () => {
     setIsLoading(true);
-    if (!user.email || !user.name || !user.password || !user.user_name) {
+    if (
+      !user.email ||
+      !user.name ||
+      !user.status ||
+      !user.password ||
+      !user.user_name
+    ) {
       setError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
@@ -82,6 +89,12 @@ const CreateUsers = () => {
             label={"Nombre de usuario"}
             value={user.user_name}
             onChange={(e) => setUser({ ...user, user_name: e.target.value })}
+          />
+          <DropdownInput
+            data={["Inactivo", "Activo"]}
+            label={"Estatus"}
+            value={user.status}
+            onChange={(e) => setUser({ ...user, status: e.target.value })}
           />
           <PasswordInput
             label={"Contraseña"}

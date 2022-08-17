@@ -18,7 +18,7 @@ const Dashboard = () => {
           <TextInput placeholder={"Input 5"} label="Domicilio" />
         </div>
         <div className=" w-1/2">
-          <TextArea placeholder={"Comentarios"} />
+          <TextArea label={"Comentarios"} />
         </div>
       </div>
       <div className="flex justify-center gap-10 m-10">

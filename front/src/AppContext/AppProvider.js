@@ -1,19 +1,32 @@
 import React, { useState, useEffect, createContext } from "react";
 import qs from "qs";
 import axios from "axios";
+import { getAllUsers } from "../api/api";
 
 const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState({ sesion: false });
-  console.log("userdata", userData);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("sesion"));
     if (items) {
       setUserData(items);
+      getData(items.datos_sesion.id);
     }
-  }, []);
+  }, [userData.sesion === true]);
+
+  // useEffect(() => {
+  //   if (userData.sesion ===true) {
+  //     getData(userData.datos_sesion.id);
+  //   }
+  // }, [userData.sesion == true]);
+
+  const getData = async (id) => {
+    const response = await getAllUsers({ id: id });
+    setUsers(response);
+  };
 
   const authenticate = async (email, pass) =>
     await new Promise((resolve, reject) => {
@@ -46,7 +59,7 @@ const AppProvider = (props) => {
   };
 
   return (
-    <AccountContext.Provider value={{ authenticate, userData, logout }}>
+    <AccountContext.Provider value={{ authenticate, userData, users, logout }}>
       {props.children}
     </AccountContext.Provider>
   );

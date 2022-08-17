@@ -26,11 +26,13 @@ const Button = styled.button`
   border-radius: 10px;
   color: ${(props) => (props.textColor ? props.textColor : "#fff")};
   font-weight: bold;
+  max-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: space-around;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
   gap: 10px;
+  white-space: nowrap;
   transition: 0.2s ease-in-out;
   &:hover {
     scale: 1.1;

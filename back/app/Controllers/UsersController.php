@@ -13,8 +13,9 @@ class UsersController extends BaseController
     
     public function getUsers()
     {
+        $request = \Config\Services::request()->getPost();
         $db = \Config\Database::connect();
-        $query   = $db->query("SELECT * FROM sys_users");
+        $query   = $db->query("SELECT * FROM sys_users WHERE created_by = ".$request["id"]."");
         $this->content['users'] = $query->getResultArray();
         $this->response->setJSON($this->content);
         $this->response->send();

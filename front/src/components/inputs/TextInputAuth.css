@@ -4,3 +4,15 @@ input:valid ~ label {
   font-size: 12px;
   color: #03a9f4;
 }
+select:focus ~ label,
+select:valid ~ label {
+  top: -23px;
+  font-size: 12px;
+  color: #03a9f4;
+}
+textarea:focus ~ label,
+textarea:valid ~ label {
+  top: -23px;
+  font-size: 12px;
+  color: #03a9f4;
+}

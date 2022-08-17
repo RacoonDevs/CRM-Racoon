@@ -24,6 +24,30 @@ export const createUser = async (data) =>
       .catch((err) => reject(err));
   });
 
+export const updateUsers = async (id, data) => {
+  const peticion = axios.post(
+    `http://localhost:8080/users/update/${id}`,
+    qs.stringify(data)
+  );
+  const response = await peticion.then((data) => {
+    return data;
+  });
+  const info = await response.data;
+  return info;
+};
+
+export const getAllUsers = async (data) => {
+  const peticion = axios.post(
+    `http://localhost:8080/users/getUsers`,
+    qs.stringify(data)
+  );
+  const response = await peticion.then((data) => {
+    return data;
+  });
+  const info = await response.data["users"];
+  return info;
+};
+
 export const getUserData = async (route, data) =>
   await new Promise((resolve, reject) => {
     axios

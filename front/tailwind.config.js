@@ -11,6 +11,9 @@ module.exports = {
         "light-blue": "#37CAE6",
         "light-gray": "#F5F5F7",
       },
+      spacing: {
+        90: "90%",
+      },
     },
   },
   plugins: [],

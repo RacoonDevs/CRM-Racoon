@@ -11,6 +11,7 @@ const Projects = lazy(() => import("../views/projects/Projects"));
 const Tasks = lazy(() => import("../views/tasks/Tasks"));
 const Users = lazy(() => import("../views/users/Users"));
 const AddUsers = lazy(() => import("../views/users/CreateUsers"));
+const EditUsers = lazy(() => import("../views/users/EditUsers"));
 
 const AppRouter = () => {
   const { userData } = useContext(AccountContext);
@@ -60,7 +61,8 @@ const AuthRoutes = () => {
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
           <Route path="/usuarios" element={<Users />} />
-          <Route path="/agregar_usuarios" element={<AddUsers />} />
+          <Route path="/usuarios/agregar_usuarios" element={<AddUsers />} />
+          <Route path="/usuarios/editar_usuario/:id" element={<EditUsers />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>
