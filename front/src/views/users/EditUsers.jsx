@@ -38,7 +38,7 @@ const EditUsers = () => {
           email: findUser[0].email,
           name: findUser[0].name,
           status: findUser[0].status,
-          // created_by: findUser[0].created_by,
+          updated_by: userData["datos_sesion"].id,
         });
       }
     }
@@ -51,7 +51,6 @@ const EditUsers = () => {
       setIsLoading(false);
     } else {
       // const data = { ...user, password: "123" };
-      console.log("antes de enviar", user);
       updateUsers(id, user)
         .then((data) => {
           setError("");

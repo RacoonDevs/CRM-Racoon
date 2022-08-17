@@ -85,7 +85,9 @@ const Sidebar = ({ children }) => {
         </ul>
         <div
           onClick={() => sesion()}
-          className={`absolute w-5/6 text-md flex items-center bottom-10 p-2 gap-5 text-white text-left cursor-pointer rounded-md hover:bg-light-white`}
+          className={`absolute ${
+            open ? "w-5/6" : "w-14"
+          }  text-md flex items-center bottom-10 p-2 gap-5 text-white text-left cursor-pointer rounded-md hover:bg-light-white`}
         >
           {/* <div className=" flex   gap-5 p-2 cursor-pointer rounded-md hover:bg-light-white"> */}
           <p>

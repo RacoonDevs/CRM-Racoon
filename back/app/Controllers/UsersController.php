@@ -122,7 +122,7 @@ class UsersController extends BaseController
                 'email' => $request["email"],
                 // 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'updated_by' => $request["updated_by"],
+                'updated_by' => intval($dataSession["id"]),
                 'updated_at' => date("Y-m-d H:i:s"),
             ];
             

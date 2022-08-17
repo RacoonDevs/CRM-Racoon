@@ -29,6 +29,7 @@ export const updateUsers = async (id, data) => {
     `http://localhost:8080/users/update/${id}`,
     qs.stringify(data)
   );
+  console.log("data antes de enviar", data);
   const response = await peticion.then((data) => {
     return data;
   });
