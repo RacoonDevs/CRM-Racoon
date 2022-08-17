@@ -106,12 +106,15 @@ class UsersController extends BaseController
         try{
             $session = Services::session();
             $dataSession = $session->get();
+            /* var_dump($dataSession);
+            die(); */
             $modelUsers = new UsersModel();
             $validation = \Config\Services::validation();
             $validation->setRules([
                 'email' => "is_unique[sys_users.email,id,$id]",
             ]);
             $request = \Config\Services::request()->getPost();
+            //intval($dataSession["id"])
             $data = [
                 'id' => $id,
                 'user_name' => $request["user_name"],
@@ -119,7 +122,7 @@ class UsersController extends BaseController
                 'email' => $request["email"],
                 // 'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
                 'name' => $request["name"],
-                'updated_by' => intval($dataSession["id"]),
+                'updated_by' => $request["updated_by"],
                 'updated_at' => date("Y-m-d H:i:s"),
             ];
             
@@ -127,6 +130,41 @@ class UsersController extends BaseController
                 $this->content['users'] = "Se actualizó correctamente el usuario";
             }else{
                 $this->content['users'] = "No se pudo actualizar el usuario";
+                $this->content['errors'] = $modelUsers->error();
+            }
+            $this->content['info'] = $data;
+        } catch (Exception $e) {
+            $this->content['errors'] = $e;
+        }
+        $this->response->setJSON($this->content);
+        $this->response->send();
+    
+    }
+    public function updatePassword($id)
+    {
+        try{
+            $session = Services::session();
+            $dataSession = $session->get();
+            /* var_dump($dataSession);
+            die(); */
+            $modelUsers = new UsersModel();
+            $validation = \Config\Services::validation();
+            $validation->setRules([
+                'email' => "is_unique[sys_users.email,id,$id]",
+            ]);
+            $request = \Config\Services::request()->getPost();
+            //intval($dataSession["id"])
+            $data = [
+                'id' => $id,
+                'password' => password_hash($request["password"], PASSWORD_BCRYPT, ['cost' => 10]),
+                'updated_by' => $request["updated_by"],
+                'updated_at' => date("Y-m-d H:i:s"),
+            ];
+            
+            if ($modelUsers->update(intval($id), $data)) {
+                $this->content['users'] = "Se actualizó la contraseña correctamente.";
+            }else{
+                $this->content['users'] = "No se pudo actualizar la contraseña.";
                 $this->content['errors'] = $modelUsers->error();
             }
             $this->content['info'] = $data;

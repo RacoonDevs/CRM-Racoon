@@ -50,7 +50,7 @@ $routes->post('users/getUsers', 'UsersController::getUsers');
 $routes->post('users/create', 'UsersController::create');
 $routes->post('users/update/(:num)', 'UsersController::update/$1');
 $routes->post('users/disbaleUser/(:num)', 'UsersController::disbaleUser/$1');
-
+$routes->post('users/updatePassword/(:num)', 'UsersController::updatePassword/$1');
 
 //UsersDetailsController
 $routes->post('usersDetails/create', 'UsersDetailsController::create');
