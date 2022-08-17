@@ -41,9 +41,10 @@ export default Container;
 
 const Contenedor = styled.div`
   width: ${(props) => (props.width ? props.size : "100%")};
-  height: ${(props) => (props.height ? props.size : "85vh")};
+  min-height: 70vh;
+  height: ${(props) => (props.height ? props.size : "auto")};
   background-color: ${(props) => (props.bgColor ? props.bgColor : "#fff")};
-  box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 10px 30px 30px;
 `;

@@ -3,7 +3,7 @@ import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate, useParams } from "react-router-dom";
-import { createUser, updateUsers } from "../../api/api";
+import { changePasswordUsers, createUser, updateUsers } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
@@ -34,11 +34,11 @@ const EditUsers = () => {
 
       if (findUser.length <= 1) {
         setUser({
-          user_name: findUser[0].user_name,
-          email: findUser[0].email,
-          name: findUser[0].name,
-          status: findUser[0].status,
-          updated_by: userData["datos_sesion"].id,
+          user_name: findUser[0].user_name ?? "",
+          email: findUser[0].email ?? "",
+          name: findUser[0].name ?? "",
+          status: findUser[0].status ?? "",
+          updated_by: userData["datos_sesion"].id ?? "",
         });
       }
     }
@@ -50,7 +50,6 @@ const EditUsers = () => {
       setError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
-      // const data = { ...user, password: "123" };
       updateUsers(id, user)
         .then((data) => {
           setError("");
@@ -81,7 +80,11 @@ const EditUsers = () => {
       setError("Las contraseñas no son iguales");
       setIsLoading(false);
     } else {
-      updateUsers(id, user)
+      const params = {
+        password: newPassword,
+        updated_by: userData["datos_sesion"].id,
+      };
+      changePasswordUsers(id, params)
         .then((data) => {
           setError("");
           setIsLoading(false);
@@ -108,7 +111,7 @@ const EditUsers = () => {
     <Container
       _isHeaderButtons={true}
       height={"auto"}
-      nameSection={"Agregar usuario"}
+      nameSection={"Editar usuario"}
       _onCancel={() => navigate(-1)}
       _onSave={saveChanges}
     >

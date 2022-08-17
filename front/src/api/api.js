@@ -36,6 +36,18 @@ export const updateUsers = async (id, data) => {
   const info = await response.data;
   return info;
 };
+export const changePasswordUsers = async (id, data) => {
+  const peticion = axios.post(
+    `http://localhost:8080/users/updatePassword/${id}`,
+    qs.stringify(data)
+  );
+  console.log("data antes de enviar", data);
+  const response = await peticion.then((data) => {
+    return data;
+  });
+  const info = await response.data;
+  return info;
+};
 
 export const getAllUsers = async (data) => {
   const peticion = axios.post(

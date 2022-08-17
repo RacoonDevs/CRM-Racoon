@@ -102,9 +102,9 @@ const Icons = styled.div`
 
 const TableContainer = styled.table`
   width: 100%;
-  box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
-  margin: 10px 0;
+  margin: 15px 0;
 `;
 const Header = styled.thead`
   width: 100%;
