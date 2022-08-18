@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
+import { Toaster, toast } from "react-hot-toast";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
-import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
@@ -13,7 +13,6 @@ const CreateUsers = () => {
   const { userData } = useContext(AccountContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({
@@ -24,7 +23,10 @@ const CreateUsers = () => {
     status: "",
     created_by: userData["datos_sesion"].id,
   });
-  console.log(user);
+
+  const notify = (text) => toast.success(text);
+  const notifyError = (text) => toast.error(text);
+
   const saveChanges = () => {
     setIsLoading(true);
     if (
@@ -34,29 +36,36 @@ const CreateUsers = () => {
       !user.password ||
       !user.user_name
     ) {
-      setError("Todos los campos son obligatorios");
+      notifyError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
       if (user.password !== repeatPassword) {
-        setError("Las contraseñas no son iguales");
+        notifyError("Las contraseñas no son iguales");
         setIsLoading(false);
       } else {
         createUser(user)
           .then((data) => {
-            setError("");
             setIsLoading(false);
             console.log(data);
             if (data.users) {
-              navigate(-1);
+              notify("Usuario creado con exito");
+              setUser({
+                email: "",
+                name: "",
+                password: "",
+                status: "",
+                user_name: "",
+              });
+              setRepeatPassword("");
             } else {
-              setError(
+              notifyError(
                 "Se ha producido un error al guardar la información intente más tarde."
               );
             }
           })
           .catch((err) => {
             console.log("Failed to create user", err);
-            setError(
+            notifyError(
               "Se ha producido un error al guardar la información intente más tarde."
             );
             setIsLoading(false);
@@ -74,7 +83,7 @@ const CreateUsers = () => {
       _onSave={saveChanges}
     >
       <div className="justify-center grid grid-cols-1 md:grid-cols-2">
-        <div className="border-4 rounded-md border-gray p-5 grid gap-5">
+        <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
           <TextInput
             label={"Nombre"}
             value={user.name}
@@ -119,14 +128,10 @@ const CreateUsers = () => {
           />
         </div>
       </div>
-      {error && (
-        <div className="text-center p-5">
-          <Label size={"12px"} text={error} color={"#EA5656"} />
-        </div>
-      )}
       <span className="flex justify-center">
         <HashLoader color={"#0063C9"} size={25} loading={isLoading} />
       </span>
+      <Toaster />
     </Container>
   );
 };

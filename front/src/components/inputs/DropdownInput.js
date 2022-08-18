@@ -13,7 +13,7 @@ const DropdownInput = ({ width, height, label, value, data, onChange }) => {
         onChange={onChange}
         required
       >
-        <Option disabled></Option>
+        {/* <Option disabled></Option> */}
         {data.map((item, i) => {
           return (
             <Option value={i} key={i}>

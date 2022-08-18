@@ -18,6 +18,7 @@ const Table = ({
   headers,
   body,
 }) => {
+  console.log(body);
   const content = body ? body : [];
   const parseDate = (date) => {
     const newDate = date.substring(0, 10).split("-").reverse().join("-");
@@ -62,7 +63,7 @@ const Table = ({
                       ) : field === "created_at" ? (
                         parseDate(obj["created_at"])
                       ) : field === "status" ? (
-                        <div>{obj[field] === 1 ? "Activo" : "Inactivo"}</div>
+                        <div>{obj[field] === "1" ? "Activo" : "Inactivo"}</div>
                       ) : (
                         obj[field]
                       )}

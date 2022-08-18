@@ -7,8 +7,8 @@ const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState({ sesion: false });
-  const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
   const [users, setUsers] = useState([]);
+  const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("sesion"));
@@ -17,7 +17,6 @@ const AppProvider = (props) => {
       getData(items.datos_sesion.id);
     }
     const oldBg = JSON.parse(localStorage.getItem("bgSelected"));
-    console.log("oldBG", oldBg);
     if (oldBg !== null) {
       setBgSelected(oldBg);
     } else {
@@ -69,6 +68,7 @@ const AppProvider = (props) => {
         bgSelected,
         logout,
         setBgSelected,
+        setUserData,
       }}
     >
       {props.children}

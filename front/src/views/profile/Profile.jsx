@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { Toaster, toast } from "react-hot-toast";
 import { AccountContext } from "../../AppContext/AppProvider";
 import { FaUserCircle, FaPen } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
@@ -6,15 +7,16 @@ import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
-import { updateUser } from "../../api/api";
+import { HashLoader } from "react-spinners";
+import { updateUsers } from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
 
 const Profile = () => {
-  const { userData } = useContext(AccountContext);
-  const { name, email, phone, address, birthdate } = userData["datos_sesion"];
+  const { userData, setUserData } = useContext(AccountContext);
+  const { name, email, phone, address, birthdate, id, status, user_name } =
+    userData["datos_sesion"];
   const navigate = useNavigate();
-  const [isError, setIsError] = useState(true);
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [user, setUser] = useState({
     name: name ?? "",
@@ -24,19 +26,36 @@ const Profile = () => {
     birthdate: birthdate ?? "",
   });
 
-  console.log(user);
+  const notify = (text) => toast.success(text);
+  const notifyError = (text) => toast.error(text);
 
   const saveChanges = () => {
-    updateUser(userData["datos_sesion"].id, user)
+    setIsLoading(true);
+    const send = {
+      name: user.name,
+      email: user.email,
+      updated_by: id,
+      user_name: user_name,
+      status: status ? 1 : 0,
+    };
+    updateUsers(id, send)
       .then((data) => {
-        console.log(data);
+        notify(data.users);
+        const oldData = JSON.parse(localStorage.getItem("sesion"));
+        oldData["datos_sesion"].name = user.name;
+        oldData["datos_sesion"].email = user.email;
+        // userData["datos_sesion"].name = user.name;
+        // userData["datos_sesion"].email = user.name;
+        setUserData({ name: user.name });
+        localStorage.setItem("sesion", JSON.stringify(oldData));
+        setIsLoading(false);
       })
       .catch((err) => {
-        console.log("Failed to login", err);
-        setError(
+        console.log("Failed to update data", err);
+        notifyError(
           "Se ha producido un error al guardar los cambios intente más tarde."
         );
-        setIsError(true);
+        setIsLoading(false);
       });
   };
 
@@ -49,7 +68,7 @@ const Profile = () => {
       _onSave={saveChanges}
     >
       <div className="justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
-        <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-gray">
+        <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
           <Label text={"Foto de perfil"} size={"16px"} />
           <p>
             <FaUserCircle
@@ -62,7 +81,7 @@ const Profile = () => {
             <FaPen />
           </IconButton>
         </div>
-        <div className="border-4 rounded-md border-gray p-5 grid gap-5">
+        <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
           <TextInput
             label={"Nombre"}
             value={user.name}
@@ -91,11 +110,10 @@ const Profile = () => {
           />
         </div>
       </div>
-      {isError && (
-        <div className="text-center p-5">
-          <Label size={"12px"} text={error} color={"#EA5656"} />
-        </div>
-      )}
+      <span className="flex justify-center">
+        <HashLoader color={"#0063C9"} size={25} loading={isLoading} />
+      </span>
+      <Toaster />
     </Container>
   );
 };
