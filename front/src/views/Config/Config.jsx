@@ -37,7 +37,7 @@ const Config = () => {
                   backgroundSize: "cover",
                 }}
                 className={
-                  "cursor-pointer hover:scale-105 transition-all ease-in-out"
+                  "cursor-pointer hover:scale-110 transition-all ease-in-out"
                 }
               ></div>
             );
