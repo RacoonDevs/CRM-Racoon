@@ -9,6 +9,7 @@ const Sidebar = lazy(() => import("../components/Sidebar/Sidebar"));
 const Profile = lazy(() => import("../views/profile/Profile"));
 const Projects = lazy(() => import("../views/projects/Projects"));
 const Tasks = lazy(() => import("../views/tasks/Tasks"));
+const Config = lazy(() => import("../views/Config/Config"));
 const Users = lazy(() => import("../views/users/Users"));
 const AddUsers = lazy(() => import("../views/users/CreateUsers"));
 const EditUsers = lazy(() => import("../views/users/EditUsers"));
@@ -60,6 +61,7 @@ const AuthRoutes = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
+          <Route path="/configuraciones" element={<Config />} />
           <Route path="/usuarios" element={<Users />} />
           <Route path="/usuarios/agregar_usuarios" element={<AddUsers />} />
           <Route path="/usuarios/editar_usuario/:id" element={<EditUsers />} />

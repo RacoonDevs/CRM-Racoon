@@ -1,13 +1,9 @@
 import React, { useContext } from "react";
 import { AccountContext } from "../../AppContext/AppProvider";
-import { ArrowBack } from "../../assets/svg/icons";
-import { FaStar, FaSave } from "react-icons/fa";
-import IconButton from "../../components/buttons/IconButton";
 import Container from "../../components/containers/Container";
-import TextInput from "../../components/inputs/TextInput";
-import TextArea from "../../components/inputs/TextArea";
+import { H3, Label } from "../../components/Titles";
 
-const Dashboard = () => {
+const Config = () => {
   const { setBgSelected } = useContext(AccountContext);
   const bg = [
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%232009ac'/%3E%3Cstop offset='1' stop-color='%232009ac' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='1200' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%235a33fe'/%3E%3Cstop offset='1' stop-color='%235a33fe' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='600' cy='0' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230a31cb'/%3E%3Cstop offset='1' stop-color='%230a31cb' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='d' cx='600' cy='800' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%239013FE'/%3E%3Cstop offset='1' stop-color='%239013FE' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='e' cx='0' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23081A51'/%3E%3Cstop offset='1' stop-color='%23081A51' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='1200' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23536DFE'/%3E%3Cstop offset='1' stop-color='%23536DFE' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='1200' height='800'/%3E%3Crect fill='url(%23b)' width='1200' height='800'/%3E%3Crect fill='url(%23c)' width='1200' height='800'/%3E%3Crect fill='url(%23d)' width='1200' height='800'/%3E%3Crect fill='url(%23e)' width='1200' height='800'/%3E%3Crect fill='url(%23f)' width='1200' height='800'/%3E%3C/svg%3E",
@@ -22,32 +18,34 @@ const Dashboard = () => {
     setBgSelected({ bgSelected: bg });
   };
   return (
-    <Container nameSection={"Dashboard"}>
-      <div className="flex gap-5">
-        <div className="pt-5 flex flex-col gap-y-5 w-1/2">
-          <TextInput placeholder={"Input 1"} label={"Nombre"} />
-          <TextInput placeholder={"Input 2"} label="Apellido" />
-          <TextInput placeholder={"Input 3"} label="Correo electronico" />
-          <TextInput placeholder={"Input 4"} label="Telefono" />
-          <TextInput placeholder={"Input 5"} label="Domicilio" />
+    <Container nameSection={"Configuraciones"}>
+      <div className="p-3 border-4 rounded-md border-gray">
+        <div className="p-3">
+          <H3 text={"Seleccionar fondo de pantalla"} color={"#58585f"} />
         </div>
-        <div className=" w-1/2">
-          <TextArea label={"Comentarios"} />
+        <div className="w-[100%] h-52 grid grid-cols-5 gap-5 ">
+          {bg.map((item, i) => {
+            return (
+              <div
+                onClick={() => setBg(i)}
+                style={{
+                  backgroundColor: "#081A51",
+                  backgroundImage: `url(
+                    "${item}"
+                  )`,
+                  backgroundAttachment: "fixed",
+                  backgroundSize: "cover",
+                }}
+                className={
+                  "cursor-pointer hover:scale-105 transition-all ease-in-out"
+                }
+              ></div>
+            );
+          })}
         </div>
-      </div>
-      <div className="flex justify-center gap-10 m-10">
-        <IconButton text={"GO BACK"} size={24} bgColor={"#58585F"}>
-          <ArrowBack size={24} />
-        </IconButton>
-        <IconButton text={"SAVE"} size={24}>
-          <FaSave size={20} />
-        </IconButton>
-        <IconButton text={"BUTTON STAR"} size={24} bgColor={"#37CAE6"}>
-          <FaStar size={20} fill={"#FAFF00"} />
-        </IconButton>
       </div>
     </Container>
   );
 };
 
-export default Dashboard;
+export default Config;

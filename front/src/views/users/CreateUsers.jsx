@@ -74,7 +74,7 @@ const CreateUsers = () => {
       _onSave={saveChanges}
     >
       <div className="justify-center grid grid-cols-1 md:grid-cols-2">
-        <div className="border-2 rounded-md border-dark p-5 grid gap-5">
+        <div className="border-4 rounded-md border-gray p-5 grid gap-5">
           <TextInput
             label={"Nombre"}
             value={user.name}

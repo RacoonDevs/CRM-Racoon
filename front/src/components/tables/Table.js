@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { FaEye, FaPen, FaTrash, FaUserPlus } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
+import { Label } from "../Titles";
 
 const Table = ({
   _isAddButton,
@@ -17,6 +18,7 @@ const Table = ({
   headers,
   body,
 }) => {
+  const content = body ? body : [];
   const parseDate = (date) => {
     const newDate = date.substring(0, 10).split("-").reverse().join("-");
     return newDate;
@@ -44,7 +46,7 @@ const Table = ({
         </Header>
         <Body>
           {React.Children.toArray(
-            body.map((obj, i) => (
+            content.map((obj, i) => (
               <TR key={i}>
                 {React.Children.toArray(
                   headers.map(([, field], index) => (
@@ -60,7 +62,7 @@ const Table = ({
                       ) : field === "created_at" ? (
                         parseDate(obj["created_at"])
                       ) : field === "status" ? (
-                        <div>{obj[field] == 1 ? "Activo" : "Inactivo"}</div>
+                        <div>{obj[field] === 1 ? "Activo" : "Inactivo"}</div>
                       ) : (
                         obj[field]
                       )}
@@ -87,6 +89,24 @@ const Table = ({
           )}
         </Body>
       </TableContainer>
+      {content.length === 0 ? (
+        <div className="flex flex-col items-center justify-center w-[100%]">
+          <img
+            src={require("../../assets/img/no_registros.png")}
+            width="350px"
+            alt="not_registros"
+          />
+          <div className="w-80 text-center">
+            <Label
+              size={20}
+              color={"#349EFF"}
+              text={
+                "Parece que se han llevado todo, pero puedes crear un nuevo registro"
+              }
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

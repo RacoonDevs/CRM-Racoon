@@ -33,7 +33,6 @@ const Profile = () => {
       })
       .catch((err) => {
         console.log("Failed to login", err);
-        // setIsLoading(false);
         setError(
           "Se ha producido un error al guardar los cambios intente más tarde."
         );
@@ -49,8 +48,8 @@ const Profile = () => {
       _onCancel={() => navigate(-1)}
       _onSave={saveChanges}
     >
-      <div className=" justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
-        <div className=" flex flex-col items-center p-5 gap-3 border-2 rounded-md border-dark">
+      <div className="justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
+        <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-gray">
           <Label text={"Foto de perfil"} size={"16px"} />
           <p>
             <FaUserCircle
@@ -63,7 +62,7 @@ const Profile = () => {
             <FaPen />
           </IconButton>
         </div>
-        <div className=" border-2 rounded-md border-dark p-5 grid gap-y-5">
+        <div className="border-4 rounded-md border-gray p-5 grid gap-5">
           <TextInput
             label={"Nombre"}
             value={user.name}

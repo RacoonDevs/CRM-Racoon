@@ -12,7 +12,7 @@ class Auth extends BaseController
         $modelUsers = new \App\Models\UsersModel();
         $request = \Config\Services::request()->getPost();
         $db = \Config\Database::connect();
-        $query   = $db->query("SELECT * FROM sys_users where email = '".$request["email"]."'");
+        $query   = $db->query("SELECT * FROM sys_users where email = '".$request["email"]."'and status = 1");
         $login = false;
         if(password_verify($request["password"], $query->getResultArray()[0]['password'])){
             $login = true;

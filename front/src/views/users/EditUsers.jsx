@@ -3,7 +3,7 @@ import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate, useParams } from "react-router-dom";
-import { changePasswordUsers, createUser, updateUsers } from "../../api/api";
+import { changePasswordUsers, updateUsers } from "../../api/api";
 import { AccountContext } from "../../AppContext/AppProvider";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
@@ -42,7 +42,7 @@ const EditUsers = () => {
         });
       }
     }
-  }, [users]);
+  }, [users, id, userData]);
 
   const saveChanges = () => {
     setIsLoading(true);
@@ -54,7 +54,6 @@ const EditUsers = () => {
         .then((data) => {
           setError("");
           setIsLoading(false);
-          console.log(data);
           if (data.users) {
             navigate(-1);
           } else {
@@ -74,7 +73,6 @@ const EditUsers = () => {
   };
 
   const changePassword = () => {
-    console.log("Changin Password");
     setIsLoading(true);
     if (newPassword !== repeatPassword) {
       setError("Las contraseñas no son iguales");
@@ -88,7 +86,6 @@ const EditUsers = () => {
         .then((data) => {
           setError("");
           setIsLoading(false);
-          console.log(data);
           if (data.users) {
             navigate(-1);
           } else {

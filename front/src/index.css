@@ -8,6 +8,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --dark-gray: #58585f;
+  --dark-purple: #081a51;
+  --dark-blue: #0063c9;
+  --dark-red: #58585f;
+  --dark-yellow: #58585f;
+  --dark-green: #58585f;
+
+  --gray: #f5f5f7;
+  --purple: #9013fe;
+  --blue: #349eff;
+  --red: #ea5656;
+  --yellow: #ffce31;
+  --green: #019707;
+
+  --light-purple: #536dfe;
+  --light-blue: #37cae6;
+  --light-white: rgba(255, 255, 255, 0.18);
 }
 
 code {

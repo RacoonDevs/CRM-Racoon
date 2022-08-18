@@ -7,6 +7,7 @@ const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState({ sesion: false });
+  const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -15,26 +16,26 @@ const AppProvider = (props) => {
       setUserData(items);
       getData(items.datos_sesion.id);
     }
+    const oldBg = JSON.parse(localStorage.getItem("bgSelected"));
+    console.log("oldBG", oldBg);
+    if (oldBg !== null) {
+      setBgSelected(oldBg);
+    } else {
+      localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
+    }
   }, [userData.sesion === true]);
-
-  // useEffect(() => {
-  //   if (userData.sesion ===true) {
-  //     getData(userData.datos_sesion.id);
-  //   }
-  // }, [userData.sesion == true]);
 
   const getData = async (id) => {
     const response = await getAllUsers({ id: id });
     setUsers(response);
   };
 
-  const authenticate = async (email, pass) =>
+  const authenticate = async (email, pass) => {
     await new Promise((resolve, reject) => {
       const data = {
         email: email,
         password: pass,
       };
-
       axios
         .post("http://localhost:8080/auth/login", qs.stringify(data))
         .then(({ data }) => {
@@ -44,6 +45,7 @@ const AppProvider = (props) => {
         })
         .catch((err) => reject(err));
     });
+  };
 
   const logout = async () => {
     await new Promise((resolve, reject) => {
@@ -59,7 +61,16 @@ const AppProvider = (props) => {
   };
 
   return (
-    <AccountContext.Provider value={{ authenticate, userData, users, logout }}>
+    <AccountContext.Provider
+      value={{
+        authenticate,
+        userData,
+        users,
+        bgSelected,
+        logout,
+        setBgSelected,
+      }}
+    >
       {props.children}
     </AccountContext.Provider>
   );
