@@ -1,0 +1,1 @@
+ALTER TABLE racooncrm.sys_users ADD COLUMN delete_user tinyint(1);

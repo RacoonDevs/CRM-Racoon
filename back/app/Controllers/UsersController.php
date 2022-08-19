@@ -15,7 +15,7 @@ class UsersController extends BaseController
     {
         $request = \Config\Services::request()->getPost();
         $db = \Config\Database::connect();
-        $query   = $db->query("SELECT * FROM sys_users WHERE created_by = ".$request["id"]."");
+        $query   = $db->query("SELECT * FROM sys_users WHERE created_by = ".$request["id"]." and (delete_user = 0 or delete_user is null)");
         $this->content['users'] = $query->getResultArray();
         $this->response->setJSON($this->content);
         $this->response->send();
@@ -175,7 +175,7 @@ class UsersController extends BaseController
         $this->response->send();
     
     }
-    public function disableUser($id)
+    public function delete($id)
     {
         try{
             $session = Services::session();
@@ -184,15 +184,15 @@ class UsersController extends BaseController
             $request = \Config\Services::request()->getPost();
             
             $data = [
-                'status' => $request["status"],
+                'delete_user' => $request["delete_user"], // 1 eliminado, 0 no eliminado
                 'updated_at' => date("Y-m-d H:i:s"),
-                'updated_by' => intval($dataSession["id"]),
+                'updated_by' => intval($request["updated_by"]),
             ];
             
             if ($modelUsers->update($id, $data)) {
-                $this->content['users'] = "Se deshabilitó correcamente le usuario.";
+                $this->content['users'] = "Se eliminó correcamente le usuario.";
             }else{
-                $this->content['users'] = "No se pudo deshabilitar el usuario.";
+                $this->content['users'] = "No se pudo eliminar el usuario.";
             }
             $this->content['info'] = $data;
         } catch (Exception $e) {

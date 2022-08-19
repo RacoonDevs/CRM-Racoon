@@ -11,7 +11,7 @@ class UsersModel extends Model
 {
     protected $table         = 'sys_users';
     protected $allowedFields = [
-        'user_name','status','email','password','name','created_by','updated_by','updated_at'
+        'user_name','status','email','password','name','created_by','updated_by','updated_at', 'delete_user'
     ];
     
     protected $returnType    = \App\Entities\UsersController::class;
