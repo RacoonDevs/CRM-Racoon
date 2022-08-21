@@ -2,13 +2,11 @@
 
 namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
-
 class Auth extends BaseController
 {
-    
+    //public $session = null;
     public function login()
     {
-        $session = \Config\Services::session();
         $modelUsers = new \App\Models\UsersModel();
         $request = \Config\Services::request()->getPost();
         $db = \Config\Database::connect();
@@ -24,7 +22,7 @@ class Auth extends BaseController
                 'status' => true,
             ];
             
-            $session->set($array);
+            $this->session->set($array);
         }else {
             $array = [
                 'user_name'  => null,
@@ -33,8 +31,7 @@ class Auth extends BaseController
                 'id' => null,
                 'status' => false,
             ];
-            
-            $session->set($array);
+            $this->session->set($array);
             $login = false;
         }
 
@@ -44,7 +41,7 @@ class Auth extends BaseController
         /* if(password_verify()){
 
         } */
-        $this->content['datos_sesion'] = $session->get();
+        $this->content['datos_sesion'] = $this->session->get();
         $this->content['sesion'] = $login;
         $this->response->setJSON($this->content);
         $this->response->send();
@@ -52,9 +49,10 @@ class Auth extends BaseController
 
     public function logout()
     {
-        $session = \Config\Services::session();
-        $session->remove($session->get());
-        $this->content['sesion'] = $session;
+        //$session = session();
+        //$this->session->remove($this->session->get());
+        $this->session->destroy();
+        $this->content['sesion'] = false;
         $this->response->setJSON($this->content);
         $this->response->send();
     }

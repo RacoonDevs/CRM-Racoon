@@ -20,6 +20,7 @@ $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultController('UsersController');
 $routes->setDefaultController('UsersDetailsController');
+$routes->setDefaultController('ProjectController');
 $routes->setDefaultController('Auth');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
@@ -57,6 +58,11 @@ $routes->post('usersDetails/create', 'UsersDetailsController::create');
 $routes->post('usersDetails/update/(:num)', 'UsersDetailsController::update/$1');
 $routes->get('usersDetails/getUsersDetails', 'UsersDetailsController::getUsersDetails');
 
+//ProjectController
+$routes->post('projects/getProjects', 'ProjectController::getProjects');
+$routes->post('projects/create', 'ProjectController::create');
+$routes->post('projects/update/(:num)', 'ProjectController::update/$1');
+$routes->post('projects/delete/(:num)', 'ProjectController::delete/$1');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
