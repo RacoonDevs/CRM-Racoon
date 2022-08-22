@@ -26,8 +26,8 @@ class UsersController extends BaseController
         try{
             $db = \Config\Database::connect();
             $db->transStart();
-            $session = Services::session();
-            // $dataSession = $session->get();
+            /* var_dump($this->session->get());
+            die(); */
             $modelUsers = new UsersModel();
             
             $validation = \Config\Services::validation();
