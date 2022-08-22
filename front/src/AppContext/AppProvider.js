@@ -65,6 +65,7 @@ const AppProvider = (props) => {
         authenticate,
         userData,
         users,
+        setUsers,
         bgSelected,
         logout,
         setBgSelected,

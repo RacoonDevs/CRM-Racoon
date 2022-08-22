@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { FaEye, FaPen, FaTrash, FaUserPlus } from "react-icons/fa";
+import { TiArrowBack } from "react-icons/ti";
 import IconButton from "../../components/buttons/IconButton";
-import { Label } from "../Titles";
-
+import { H4, Label } from "../Titles";
+import Modal from "../modal/Modal";
 const Table = ({
   _isAddButton,
   onClickAddButton,
   textAddButton,
-  bgColor,
   doEdit,
   doShow,
   doDelete,
@@ -18,12 +18,19 @@ const Table = ({
   headers,
   body,
 }) => {
-  console.log(body);
   const content = body ? body : [];
+  const [active, setActive] = useState(false);
+  const [itemSelected, setItemSelected] = useState({});
+  const toggle = (item) => {
+    setItemSelected(item);
+    setActive(!active);
+  };
+
   const parseDate = (date) => {
     const newDate = date.substring(0, 10).split("-").reverse().join("-");
     return newDate;
   };
+
   return (
     <div className="relative">
       {_isAddButton && (
@@ -80,7 +87,11 @@ const Table = ({
                         <FaPen fill="#fff" onClick={() => onEdit(obj["id"])} />
                       </Icons>
                       <Icons bgColor={"#EA5656"}>
-                        <FaTrash fill="#fff" onClick={onShow} />
+                        <FaTrash
+                          fill="#fff"
+                          // onClick={() => onDelete(obj["id"])}
+                          onClick={() => toggle(obj)}
+                        />
                       </Icons>
                     </div>
                   </TD>
@@ -108,6 +119,31 @@ const Table = ({
           </div>
         </div>
       ) : null}
+      <Modal active={active} toggle={toggle}>
+        <div className="w-[400px] text-center flex flex-col items-center">
+          <H4
+            color={"#0063c9"}
+            text={`¿Estas seguro de querer eliminar "${itemSelected["name"]}"?`}
+          />
+          <img
+            alt="delete_item"
+            src={require("../../assets/img/delete_item.png")}
+            width={350}
+          />
+          <div className="w-full flex justify-around">
+            <IconButton bgColor={"#EA5656"} text={"Cancelar"}>
+              <TiArrowBack fill="#fff" onClick={() => toggle()} />
+            </IconButton>
+            <IconButton
+              bgColor={"#019707"}
+              text={"Aceptar"}
+              onClick={() => onDelete(itemSelected["id"])}
+            >
+              <FaTrash fill="#fff" />
+            </IconButton>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
@@ -124,7 +160,7 @@ const Icons = styled.div`
 const TableContainer = styled.table`
   width: 100%;
   box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
+  border-radius: 15px;
   margin: 15px 0;
 `;
 const Header = styled.thead`
@@ -151,10 +187,10 @@ const TH = styled.th`
   background-color: #dcdcdc;
   text-align: left;
   &:first-of-type {
-    border-radius: 10px 0 0 10px;
+    border-radius: 15px 0 0 0;
   }
   &:last-of-type {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 15px 0 0;
   }
 `;
 const TD = styled.td`

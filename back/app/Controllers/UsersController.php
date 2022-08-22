@@ -185,6 +185,7 @@ class UsersController extends BaseController
             
             $data = [
                 'delete_user' => $request["delete_user"], // 1 eliminado, 0 no eliminado
+                'status' => 0,
                 'updated_at' => date("Y-m-d H:i:s"),
                 'updated_by' => intval($request["updated_by"]),
             ];

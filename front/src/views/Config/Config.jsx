@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AccountContext } from "../../AppContext/AppProvider";
 import Container from "../../components/containers/Container";
 import { listBg } from "../../components/Sidebar/Sidebar";
-import { H3, Label } from "../../components/Titles";
+import { H3 } from "../../components/Titles";
 
 const Config = () => {
   const { setBgSelected } = useContext(AccountContext);

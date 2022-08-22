@@ -51,7 +51,7 @@ const Sidebar = ({ children }) => {
 
   return (
     <div
-      className="flex"
+      className="flex h-screen max-h-screen"
       style={{
         backgroundColor: "#081A51",
         backgroundImage: `url(
@@ -65,12 +65,13 @@ const Sidebar = ({ children }) => {
             ? "unset"
             : "cover"
         }`,
+        overflow: "hidden",
       }}
     >
       <div
         className={`${
           open ? "w-72" : "w-24"
-        } duration-500 h-screen p-5 pt-10  relative `}
+        } duration-500  p-5 pt-10  relative `}
       >
         <FaChevronCircleLeft
           className={`absolute cursor-pointer 
@@ -156,7 +157,7 @@ const Sidebar = ({ children }) => {
           />
           <p className="font-bold">CRM RACOON</p>
         </div>
-        <div className="p-4 h-[92%] bg-light-gray overflow-y-auto">
+        <div className="p-4 h-[92%] bg-light-gray overflow-auto">
           {children}
         </div>
       </div>

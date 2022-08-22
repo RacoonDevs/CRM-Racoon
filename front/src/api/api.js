@@ -1,13 +1,12 @@
 import qs from "qs";
 import axios from "axios";
 
+export const UrlEnv = process.env.REACT_APP_API_URL;
+console.log(UrlEnv);
 export const updateUser = async (id, data) =>
   await new Promise((resolve, reject) => {
     axios
-      .post(
-        `http://localhost:8080/userDetails/update/${id}`,
-        qs.stringify(data)
-      )
+      .post(`${UrlEnv}userDetails/update/${id}`, qs.stringify(data))
       .then(({ data }) => {
         resolve(data);
       })
@@ -17,7 +16,7 @@ export const updateUser = async (id, data) =>
 export const createUser = async (data) =>
   await new Promise((resolve, reject) => {
     axios
-      .post(`http://localhost:8080/users/create`, qs.stringify(data))
+      .post(`${UrlEnv}users/create`, qs.stringify(data))
       .then(({ data }) => {
         resolve(data);
       })
@@ -26,7 +25,7 @@ export const createUser = async (data) =>
 
 export const updateUsers = async (id, data) => {
   const peticion = axios.post(
-    `http://localhost:8080/users/update/${id}`,
+    `${UrlEnv}users/update/${id}`,
     qs.stringify(data)
   );
   const response = await peticion.then((data) => {
@@ -35,10 +34,23 @@ export const updateUsers = async (id, data) => {
   const info = await response.data;
   return info;
 };
+
 export const changePasswordUsers = async (id, data) => {
   const peticion = axios.post(
-    `http://localhost:8080/users/updatePassword/${id}`,
+    `${UrlEnv}users/updatePassword/${id}`,
     qs.stringify(data)
+  );
+  const response = await peticion.then((data) => {
+    return data;
+  });
+  const info = await response.data;
+  return info;
+};
+
+export const deleteUSer = async (id, params) => {
+  const peticion = axios.post(
+    `${UrlEnv}users/delete/${id}`,
+    qs.stringify(params)
   );
   const response = await peticion.then((data) => {
     return data;
@@ -48,10 +60,7 @@ export const changePasswordUsers = async (id, data) => {
 };
 
 export const getAllUsers = async (data) => {
-  const peticion = axios.post(
-    `http://localhost:8080/users/getUsers`,
-    qs.stringify(data)
-  );
+  const peticion = axios.post(`${UrlEnv}users/getUsers`, qs.stringify(data));
   const response = await peticion.then((data) => {
     return data;
   });
@@ -62,7 +71,7 @@ export const getAllUsers = async (data) => {
 export const getUserData = async (route, data) =>
   await new Promise((resolve, reject) => {
     axios
-      .post(`http://localhost:8080/${route}`, qs.stringify(data))
+      .post(`${UrlEnv}${route}`, qs.stringify(data))
       .then(({ data }) => {
         localStorage.setItem("userData", JSON.stringify(data));
         resolve(data);
