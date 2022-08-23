@@ -2,16 +2,6 @@ import qs from "qs";
 import axios from "axios";
 
 export const UrlEnv = process.env.REACT_APP_API_URL;
-console.log(UrlEnv);
-export const updateUser = async (id, data) =>
-  await new Promise((resolve, reject) => {
-    axios
-      .post(`${UrlEnv}userDetails/update/${id}`, qs.stringify(data))
-      .then(({ data }) => {
-        resolve(data);
-      })
-      .catch((err) => reject(err));
-  });
 
 export const createUser = async (data) =>
   await new Promise((resolve, reject) => {
@@ -26,6 +16,18 @@ export const createUser = async (data) =>
 export const updateUsers = async (id, data) => {
   const peticion = axios.post(
     `${UrlEnv}users/update/${id}`,
+    qs.stringify(data)
+  );
+  const response = await peticion.then((data) => {
+    return data;
+  });
+  const info = await response.data;
+  return info;
+};
+
+export const updateUsersDetails = async (id, data) => {
+  const peticion = axios.post(
+    `${UrlEnv}usersDetails/update/${id}`,
     qs.stringify(data)
   );
   const response = await peticion.then((data) => {

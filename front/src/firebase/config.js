@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  deleteObject,
+  getDownloadURL,
+} from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 
 const firebaseConfig = {
@@ -14,13 +20,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 
-export function uploadFile(file) {
+export async function uploadFile(file) {
   const name = uuidv4();
 
   const storageRef = ref(storage, `photo_profile/${name}`);
-  uploadBytes(storageRef, file).then((snapshot) => {
-    console.log(snapshot);
-  });
+
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
+  return url;
 }
 
 export function defelteProfileImage(file) {

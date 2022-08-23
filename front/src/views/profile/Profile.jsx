@@ -1,24 +1,35 @@
 import React, { useState, useContext } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { AccountContext } from "../../AppContext/AppProvider";
-import { FaUserCircle, FaPen } from "react-icons/fa";
+import { FaUserCircle, FaPen, FaUpload } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
-import { updateUsers } from "../../api/api";
+import { updateUsers, updateUsersDetails } from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
 import { uploadFile } from "../../firebase/config";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const Profile = () => {
   const { userData, setUserData } = useContext(AccountContext);
-  const { name, email, phone, address, birthdate, id, status, user_name } =
-    userData["datos_sesion"];
+  const {
+    name,
+    email,
+    phone,
+    address,
+    birthdate,
+    id,
+    status,
+    user_name,
+    photo_url,
+  } = userData["datos_sesion"];
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [newPhoto, setNewPhoto] = useState(null);
+  const [localPhoto, setLocalPhoto] = useState(null);
 
   const [user, setUser] = useState({
     name: name ?? "",
@@ -26,6 +37,7 @@ const Profile = () => {
     phone: phone ?? "",
     address: address ?? "",
     birthdate: birthdate ?? "",
+    photo_url: photo_url ?? "asdasd",
   });
 
   const notify = (text) => toast.success(text);
@@ -42,15 +54,34 @@ const Profile = () => {
     };
     updateUsers(id, send)
       .then((data) => {
-        notify(data.users);
+        // notify(data.users);
         const oldData = JSON.parse(localStorage.getItem("sesion"));
         oldData["datos_sesion"].name = user.name;
         oldData["datos_sesion"].email = user.email;
-        // userData["datos_sesion"].name = user.name;
-        // userData["datos_sesion"].email = user.name;
         setUserData({ name: user.name });
         localStorage.setItem("sesion", JSON.stringify(oldData));
-        setIsLoading(false);
+
+        if (newPhoto) {
+          uploadImg(newPhoto);
+        }
+
+        const userDetails = {
+          photo_url: user.photo_url,
+          addres: user.address,
+          phone: user.phone,
+          birthdate: user.birthdate,
+          updated_by: id,
+        };
+        console.log(userDetails);
+        updateUsersDetails(id, userDetails)
+          .then((res) => {
+            notify(res.users);
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            notifyError(err.users);
+            setIsLoading(false);
+          });
       })
       .catch((err) => {
         console.log("Failed to update data", err);
@@ -61,9 +92,28 @@ const Profile = () => {
       });
   };
 
-  const uploadImg = (e) => {
-    console.log(e.target.files[0]);
-    uploadFile(e.target.files[0]);
+  const uploadImg = async (file) => {
+    console.log("esperando a subir imagen");
+    try {
+      // throw new Error("Fallo al subir")
+      const result = await uploadFile(file);
+      setUser({ ...user, photo_url: result });
+      console.log("imagen subida: ", result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const hiddenFileInput = React.useRef(null);
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    hiddenFileInput.current.click();
+  };
+
+  const handleSelectPhoto = (file) => {
+    setNewPhoto(file);
+    setLocalPhoto(URL.createObjectURL(file));
   };
 
   return (
@@ -77,17 +127,54 @@ const Profile = () => {
       <div className="justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
         <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
           <Label text={"Foto de perfil"} size={"16px"} />
-          <p>
-            <FaUserCircle
-              size={150}
-              fill={"#58585F"}
-              className={` cursor-pointer duration-500 rounded-full`}
-            />
-          </p>
-          <IconButton text={"Cambiar foto"}>
-            <FaPen />
+          <div>
+            {!user.photo_url && !newPhoto && (
+              <FaUserCircle
+                onClick={handleClick}
+                size={150}
+                fill={"#58585F"}
+                className={` cursor-pointer duration-500 rounded-full`}
+              />
+            )}
+            {user.photo_url && !newPhoto && (
+              <div
+                onClick={handleClick}
+                className=" h-44 w-44 cursor-pointer rounded-full"
+              >
+                <img
+                  className={
+                    "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
+                  }
+                  src={user.photo_url}
+                  alt={"foto_perfil"}
+                />
+              </div>
+            )}
+            {newPhoto && (
+              <div
+                onClick={handleClick}
+                className=" h-44 w-44 cursor-pointer rounded-full"
+              >
+                <img
+                  src={localPhoto}
+                  alt={"local foto"}
+                  className={
+                    "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
+                  }
+                />
+              </div>
+            )}
+          </div>
+          <IconButton onClick={handleClick} text={"Cambiar foto"}>
+            <FaUpload />
           </IconButton>
-          {/* <input type={"file"} onChange={(e) => uploadImg(e)} /> */}
+          <input
+            type={"file"}
+            ref={hiddenFileInput}
+            accept=".jpeg,.png,.jpg"
+            onChange={(e) => handleSelectPhoto(e.target.files[0])}
+            style={{ display: "none" }}
+          />
         </div>
         <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
           <TextInput
