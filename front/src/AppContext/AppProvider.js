@@ -1,13 +1,13 @@
 import React, { useState, useEffect, createContext } from "react";
+import { getAllUsers, getUserDataDetails, UrlEnv } from "../api/api";
 import qs from "qs";
 import axios from "axios";
-import { getAllUsers, getUserDataDetails, UrlEnv } from "../api/api";
 
 const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState({ sesion: false });
-  const [userDetails, setUserDetails] = useState("");
+  const [userDetails, setUserDetails] = useState([]);
   const [users, setUsers] = useState([]);
   const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
 
@@ -15,16 +15,24 @@ const AppProvider = (props) => {
     const items = JSON.parse(localStorage.getItem("sesion"));
     if (items) {
       setUserData(items);
-      getMyUsers(items.datos_sesion.id);
-      getUserDetails(items.datos_sesion.id);
     }
-    const oldBg = JSON.parse(localStorage.getItem("bgSelected"));
-    if (oldBg !== null) {
-      setBgSelected(oldBg);
+    if (JSON.parse(localStorage.getItem("bgSelected")) !== null) {
+      setBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
     } else {
       localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
     }
-  }, [userData.sesion === true]);
+    if (userData.sesion === true) {
+      getMyUsers(items.datos_sesion.id);
+      getUserDetails(items.datos_sesion.id);
+    }
+  }, [userData.sesion, !userDetails]);
+
+  // useEffect(() => {
+  //   if (userData.sesion === true) {
+  //     getMyUsers(userData.datos_sesion.id);
+  //     getUserDetails(userData.datos_sesion.id);
+  //   }
+  // }, [userData.sesion && userData.datos_sesion.id]);
 
   const getMyUsers = async (id) => {
     const response = await getAllUsers({ id: id });
@@ -71,14 +79,15 @@ const AppProvider = (props) => {
       value={{
         authenticate,
         userData,
+        setUserData,
         users,
         setUsers,
-        bgSelected,
-        logout,
-        setBgSelected,
-        setUserData,
         userDetails,
         setUserDetails,
+        getUserDetails,
+        bgSelected,
+        setBgSelected,
+        logout,
       }}
     >
       {props.children}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { AccountContext } from "../../AppContext/AppProvider";
 import { FaUserCircle, FaUpload } from "react-icons/fa";
@@ -8,7 +8,11 @@ import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
-import { updateUsers, updateUsersDetails } from "../../api/api";
+import {
+  getUserDataDetails,
+  updateUsers,
+  updateUsersDetails,
+} from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
 import { uploadFile } from "../../firebase/config";
 window.Buffer = window.Buffer || require("buffer").Buffer;
@@ -21,7 +25,6 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newPhoto, setNewPhoto] = useState(null);
   const [localPhoto, setLocalPhoto] = useState(null);
-
   const [user, setUser] = useState({
     name: name ?? "",
     email: email ?? "",
@@ -30,6 +33,26 @@ const Profile = () => {
     birthdate: userDetails.birthdate ?? "",
     photo_url: userDetails.photo_url ?? null,
   });
+  console.log(userDetails);
+
+  useEffect(() => {
+    if (userDetails) {
+      console.log("el id", id);
+      getUserDetails(id);
+    }
+  }, []);
+
+  const getUserDetails = async (id) => {
+    const response = await getUserDataDetails({ id: id });
+    setUser({
+      ...user,
+      photo_url: response[0].photo_url,
+      address: response[0].address,
+      birthdate: response[0].birthdate,
+      phone: response[0].phone,
+    });
+    // return setUserDetails(response[0]);
+  };
 
   const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
@@ -51,8 +74,6 @@ const Profile = () => {
         const result = await uploadFile(newPhoto);
         setUser({ ...user, photo_url: result });
         profile = result;
-
-        // console.log("imagen subida: ", result);
       } catch (err) {
         console.log(err);
       }
@@ -77,11 +98,12 @@ const Profile = () => {
         updateUsersDetails(id, userDetails)
           .then(() => {
             // notify(res.users);
-            setUserDetails({
-              ...userDetails,
-              photo_url: userDetails.photo_url,
-            });
+            // setUserDetails({
+            //   ...userDetails,
+            //   photo_url: userDetails.photo_url,
+            // });
             setUserData({ name: user.name });
+            setUserDetails({ photo_url: profile });
             setIsLoading(false);
           })
           .catch((err) => {

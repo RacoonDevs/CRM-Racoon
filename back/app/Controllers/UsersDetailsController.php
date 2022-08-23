@@ -89,6 +89,9 @@ class UsersDetailsController extends BaseController
                 'updated_at' => date("Y-m-d H:i:s"),
                 //'id_user' => intval($request["id_user"]),
             ];
+
+            // $db = \Config\Database::connect();
+            // $details_id  = $db->query("SELECT id FROM sys_user_details WHERE id_user = ".$id."")->getResultArray();
             
             if ($modelUsers->update(intval($id),$data)) {
                 $this->content['users'] = "Detalle agregado correctamente";
