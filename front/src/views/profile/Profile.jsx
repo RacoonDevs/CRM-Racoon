@@ -30,6 +30,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newPhoto, setNewPhoto] = useState(null);
   const [localPhoto, setLocalPhoto] = useState(null);
+  const [changePhoto, setChangePhoto] = useState(null);
 
   const [user, setUser] = useState({
     name: name ?? "",
@@ -37,13 +38,13 @@ const Profile = () => {
     phone: phone ?? "",
     address: address ?? "",
     birthdate: birthdate ?? "",
-    photo_url: photo_url ?? "asdasd",
+    photo_url: photo_url ? photo_url : null,
   });
 
   const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     setIsLoading(true);
     const send = {
       name: user.name,
@@ -52,6 +53,27 @@ const Profile = () => {
       user_name: user_name,
       status: status ? 1 : 0,
     };
+
+    let profile = null;
+
+    if (newPhoto) {
+      try {
+        const result = await uploadFile(newPhoto);
+        setUser({ ...user, photo_url: result });
+        profile = result;
+        console.log("imagen subida: ", result);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    const userDetails = {
+      photo_url: profile ?? user.phone,
+      address: user.address,
+      phone: user.phone,
+      birthdate: user.birthdate,
+      updated_by: id,
+    };
+
     updateUsers(id, send)
       .then((data) => {
         // notify(data.users);
@@ -61,17 +83,6 @@ const Profile = () => {
         setUserData({ name: user.name });
         localStorage.setItem("sesion", JSON.stringify(oldData));
 
-        if (newPhoto) {
-          uploadImg(newPhoto);
-        }
-
-        const userDetails = {
-          photo_url: user.photo_url,
-          addres: user.address,
-          phone: user.phone,
-          birthdate: user.birthdate,
-          updated_by: id,
-        };
         console.log(userDetails);
         updateUsersDetails(id, userDetails)
           .then((res) => {
@@ -94,14 +105,6 @@ const Profile = () => {
 
   const uploadImg = async (file) => {
     console.log("esperando a subir imagen");
-    try {
-      // throw new Error("Fallo al subir")
-      const result = await uploadFile(file);
-      setUser({ ...user, photo_url: result });
-      console.log("imagen subida: ", result);
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   const hiddenFileInput = React.useRef(null);

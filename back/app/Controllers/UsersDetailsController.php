@@ -42,11 +42,13 @@ class UsersDetailsController extends BaseController
             );
             $data = [
                 'photo_url' => $request["photo_url"],
-                'addres' => $request["addres"],
+                'address' => $request["address"],
                 'phone' => $request["phone"],
                 'birthdate' => $request["birthdate"],
                 'created_by' => $dataSession["id"],
                 'updated_at' => null,
+                'created_by' => $request["created_by"],
+                'created_at' => date("Y-m-d H:i:s"),
                 'id_user' => intval($request["id_user"]),
             ];
             
@@ -79,12 +81,12 @@ class UsersDetailsController extends BaseController
             $data = [
                 'id' => $id,
                 'photo_url' => $request["photo_url"],
-                'addres' => $request["addres"],
+                'address' => $request["address"],
                 'birthdate' => $request["birthdate"],
                 'phone' => $request["phone"],
-                'created_by' => $dataSession["id"],
-                'updated_at' => null,
-                'id_user' => intval($request["id_user"]),
+                'updated_by' => $request["updated_by"],
+                'updated_at' => date("Y-m-d H:i:s"),
+                //'id_user' => intval($request["id_user"]),
             ];
             
             if ($modelUsers->update(intval($id),$data)) {
