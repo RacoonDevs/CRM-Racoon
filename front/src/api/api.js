@@ -70,13 +70,25 @@ export const getAllUsers = async (data) => {
   return info;
 };
 
-export const getUserData = async (route, data) =>
-  await new Promise((resolve, reject) => {
-    axios
-      .post(`${UrlEnv}${route}`, qs.stringify(data))
-      .then(({ data }) => {
-        localStorage.setItem("userData", JSON.stringify(data));
-        resolve(data);
-      })
-      .catch((err) => reject(err));
+export const getUserDataDetails = async (data) => {
+  const peticion = axios.post(
+    `${UrlEnv}usersDetails/getUsersDetails`,
+    qs.stringify(data)
+  );
+  const response = await peticion.then((data) => {
+    return data;
   });
+  const info = await response.data["users"];
+  return info;
+};
+
+// export const getUserData = async (route, data) =>
+//   await new Promise((resolve, reject) => {
+//     axios
+//       .post(`${UrlEnv}${route}`, qs.stringify(data))
+//       .then(({ data }) => {
+//         localStorage.setItem("userData", JSON.stringify(data));
+//         resolve(data);
+//       })
+//       .catch((err) => reject(err));
+//   });

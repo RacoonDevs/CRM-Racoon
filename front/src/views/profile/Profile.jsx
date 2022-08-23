@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { AccountContext } from "../../AppContext/AppProvider";
-import { FaUserCircle, FaPen, FaUpload } from "react-icons/fa";
+import { FaUserCircle, FaUpload } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
@@ -14,31 +14,21 @@ import { uploadFile } from "../../firebase/config";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const Profile = () => {
-  const { userData, setUserData } = useContext(AccountContext);
-  const {
-    name,
-    email,
-    phone,
-    address,
-    birthdate,
-    id,
-    status,
-    user_name,
-    photo_url,
-  } = userData["datos_sesion"];
+  const { userData, setUserData, userDetails, setUserDetails } =
+    useContext(AccountContext);
+  const { name, email, id, status, user_name } = userData["datos_sesion"];
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [newPhoto, setNewPhoto] = useState(null);
   const [localPhoto, setLocalPhoto] = useState(null);
-  const [changePhoto, setChangePhoto] = useState(null);
 
   const [user, setUser] = useState({
     name: name ?? "",
     email: email ?? "",
-    phone: phone ?? "",
-    address: address ?? "",
-    birthdate: birthdate ?? "",
-    photo_url: photo_url ? photo_url : null,
+    phone: userDetails.phone ?? "",
+    address: userDetails.address ?? "",
+    birthdate: userDetails.birthdate ?? "",
+    photo_url: userDetails.photo_url ?? null,
   });
 
   const notify = (text) => toast.success(text);
@@ -61,13 +51,14 @@ const Profile = () => {
         const result = await uploadFile(newPhoto);
         setUser({ ...user, photo_url: result });
         profile = result;
-        console.log("imagen subida: ", result);
+
+        // console.log("imagen subida: ", result);
       } catch (err) {
         console.log(err);
       }
     }
     const userDetails = {
-      photo_url: profile ?? user.phone,
+      photo_url: profile ?? user.photo_url,
       address: user.address,
       phone: user.phone,
       birthdate: user.birthdate,
@@ -76,21 +67,28 @@ const Profile = () => {
 
     updateUsers(id, send)
       .then((data) => {
-        // notify(data.users);
+        notify(data.users);
         const oldData = JSON.parse(localStorage.getItem("sesion"));
         oldData["datos_sesion"].name = user.name;
         oldData["datos_sesion"].email = user.email;
-        setUserData({ name: user.name });
+
         localStorage.setItem("sesion", JSON.stringify(oldData));
 
-        console.log(userDetails);
         updateUsersDetails(id, userDetails)
-          .then((res) => {
-            notify(res.users);
+          .then(() => {
+            // notify(res.users);
+            setUserDetails({
+              ...userDetails,
+              photo_url: userDetails.photo_url,
+            });
+            setUserData({ name: user.name });
             setIsLoading(false);
           })
           .catch((err) => {
-            notifyError(err.users);
+            notifyError(
+              "Se ha producido un error al guardar los cambios intente más tarde.",
+              err
+            );
             setIsLoading(false);
           });
       })
@@ -101,10 +99,6 @@ const Profile = () => {
         );
         setIsLoading(false);
       });
-  };
-
-  const uploadImg = async (file) => {
-    console.log("esperando a subir imagen");
   };
 
   const hiddenFileInput = React.useRef(null);
@@ -146,7 +140,7 @@ const Profile = () => {
               >
                 <img
                   className={
-                    "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
+                    "inline-block w-full h-full object-cover rounded-full ring-4 ring-slate-200"
                   }
                   src={user.photo_url}
                   alt={"foto_perfil"}

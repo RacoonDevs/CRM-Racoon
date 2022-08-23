@@ -11,8 +11,9 @@ class UsersDetailsController extends BaseController
     
     public function getUsersDetails()
     {
+        $request = \Config\Services::request()->getPost();
         $db = \Config\Database::connect();
-        $query   = $db->query("SELECT * FROM sys_user_details");
+        $query   = $db->query("SELECT * FROM sys_user_details WHERE id_user = ".$request["id"]."");
         $this->content['users'] = $query->getResultArray();
         $this->response->setJSON($this->content);
         $this->response->send();
@@ -47,7 +48,7 @@ class UsersDetailsController extends BaseController
                 'birthdate' => $request["birthdate"],
                 'created_by' => $dataSession["id"],
                 'updated_at' => null,
-                'created_by' => $request["created_by"],
+                'created_by' => intval($request["created_by"]),
                 'created_at' => date("Y-m-d H:i:s"),
                 'id_user' => intval($request["id_user"]),
             ];
@@ -84,7 +85,7 @@ class UsersDetailsController extends BaseController
                 'address' => $request["address"],
                 'birthdate' => $request["birthdate"],
                 'phone' => $request["phone"],
-                'updated_by' => $request["updated_by"],
+                'updated_by' => intval($request["updated_by"]),
                 'updated_at' => date("Y-m-d H:i:s"),
                 //'id_user' => intval($request["id_user"]),
             ];

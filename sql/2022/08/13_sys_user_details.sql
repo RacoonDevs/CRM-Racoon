@@ -3,7 +3,6 @@ CREATE TABLE `racooncrm`.`sys_user_details` (
   `photo_url` VARCHAR(120) NULL,
   `addres` VARCHAR(120) NULL,
   `phone` VARCHAR(15) NULL,
-  `birthdate` DATE,
   `created_at` TIMESTAMP ,
   `created_by` INT(11) NOT NULL,
   `updated_at` DATETIME NULL,

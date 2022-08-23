@@ -56,7 +56,7 @@ $routes->post('users/updatePassword/(:num)', 'UsersController::updatePassword/$1
 //UsersDetailsController
 $routes->post('usersDetails/create', 'UsersDetailsController::create');
 $routes->post('usersDetails/update/(:num)', 'UsersDetailsController::update/$1');
-$routes->get('usersDetails/getUsersDetails', 'UsersDetailsController::getUsersDetails');
+$routes->post('usersDetails/getUsersDetails', 'UsersDetailsController::getUsersDetails');
 
 //ProjectController
 $routes->post('projects/getProjects', 'ProjectController::getProjects');

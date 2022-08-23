@@ -9,7 +9,7 @@ class UsersDetailsModel extends Model
 {
     protected $table         = 'sys_user_details';
     protected $allowedFields = [
-        'photo_url','address','phone','birthday','id_user','created_by','updated_at','updated_by'
+        'photo_url','address','phone','birthdate','id_user','created_by','updated_at','updated_by'
     ];
     protected $returnType    = \App\Entities\UsersDetailsController::class;
     protected $useTimestamps = true;

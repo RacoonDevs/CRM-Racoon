@@ -27,7 +27,8 @@ export const listBg = [
 /* background by SVGBackgrounds.com */
 
 const Sidebar = ({ children }) => {
-  const { logout, userData, bgSelected } = useContext(AccountContext);
+  const { logout, userData, bgSelected, userDetails } =
+    useContext(AccountContext);
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
@@ -84,13 +85,26 @@ const Sidebar = ({ children }) => {
           onClick={() => navigate("/perfil")}
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          <p>
-            <FaUserCircle
-              size={40}
-              fill={"white"}
-              className={` cursor-pointer duration-500 rounded-full`}
-            />
-          </p>
+          {!userDetails.photo_url && (
+            <p>
+              <FaUserCircle
+                size={40}
+                fill={"white"}
+                className={` cursor-pointer duration-500 rounded-full`}
+              />
+            </p>
+          )}
+          {userDetails.photo_url !== null && (
+            <div className=" h-[40px] w-[40px] cursor-pointer rounded-full">
+              <img
+                src={userDetails.photo_url}
+                alt={"profile"}
+                className={
+                  "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
+                }
+              />
+            </div>
+          )}
           <span
             className={` cursor-pointer ${!open && "scale-0"} ${
               open && " transition delay-200 duration-200"

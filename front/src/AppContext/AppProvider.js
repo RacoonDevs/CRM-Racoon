@@ -1,12 +1,13 @@
 import React, { useState, useEffect, createContext } from "react";
 import qs from "qs";
 import axios from "axios";
-import { getAllUsers } from "../api/api";
+import { getAllUsers, getUserDataDetails, UrlEnv } from "../api/api";
 
 const AccountContext = createContext();
 
 const AppProvider = (props) => {
   const [userData, setUserData] = useState({ sesion: false });
+  const [userDetails, setUserDetails] = useState("");
   const [users, setUsers] = useState([]);
   const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
 
@@ -14,7 +15,8 @@ const AppProvider = (props) => {
     const items = JSON.parse(localStorage.getItem("sesion"));
     if (items) {
       setUserData(items);
-      getData(items.datos_sesion.id);
+      getMyUsers(items.datos_sesion.id);
+      getUserDetails(items.datos_sesion.id);
     }
     const oldBg = JSON.parse(localStorage.getItem("bgSelected"));
     if (oldBg !== null) {
@@ -24,9 +26,14 @@ const AppProvider = (props) => {
     }
   }, [userData.sesion === true]);
 
-  const getData = async (id) => {
+  const getMyUsers = async (id) => {
     const response = await getAllUsers({ id: id });
     setUsers(response);
+  };
+
+  const getUserDetails = async (id) => {
+    const response = await getUserDataDetails({ id: id });
+    setUserDetails(response[0]);
   };
 
   const authenticate = async (email, pass) => {
@@ -36,7 +43,7 @@ const AppProvider = (props) => {
         password: pass,
       };
       axios
-        .post("http://localhost:8080/auth/login", qs.stringify(data))
+        .post(`${UrlEnv}auth/login`, qs.stringify(data))
         .then(({ data }) => {
           setUserData(data);
           localStorage.setItem("sesion", JSON.stringify(data));
@@ -49,7 +56,7 @@ const AppProvider = (props) => {
   const logout = async () => {
     await new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:8080/auth/logout")
+        .post(`${UrlEnv}auth/logout`)
         .then(() => {
           setUserData({ sesion: false });
           localStorage.removeItem("sesion");
@@ -70,6 +77,8 @@ const AppProvider = (props) => {
         logout,
         setBgSelected,
         setUserData,
+        userDetails,
+        setUserDetails,
       }}
     >
       {props.children}
