@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
 import { updateUsers } from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
+import { uploadFile } from "../../firebase/config";
+window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const Profile = () => {
   const { userData, setUserData } = useContext(AccountContext);
@@ -59,6 +61,11 @@ const Profile = () => {
       });
   };
 
+  const uploadImg = (e) => {
+    console.log(e.target.files[0]);
+    uploadFile(e.target.files[0]);
+  };
+
   return (
     <Container
       _isHeaderButtons={true}
@@ -80,6 +87,7 @@ const Profile = () => {
           <IconButton text={"Cambiar foto"}>
             <FaPen />
           </IconButton>
+          {/* <input type={"file"} onChange={(e) => uploadImg(e)} /> */}
         </div>
         <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
           <TextInput

@@ -47,7 +47,7 @@ const styles = {
   window: {
     position: "relative",
     background: "#fff",
-    borderRadius: 5,
+    borderRadius: 15,
     padding: 30,
     boxShadow: "2px 2px 10px rgba(0,0,0,0.3)",
     minnWidth: 450,
