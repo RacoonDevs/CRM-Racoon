@@ -80,7 +80,7 @@ class UsersDetailsController extends BaseController
                 'photo_url' => $request["photo_url"],
                 'addres' => $request["addres"],
                 'phone' => $request["phone"],
-                'created_by' => $dataSession["id"],
+                'updated_by' => $request["updated_by"],
                 'updated_at' => null,
                 'id_user' => intval($request["id_user"]),
             ];
