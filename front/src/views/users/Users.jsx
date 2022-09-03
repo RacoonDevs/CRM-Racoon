@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import Container from "../../components/containers/Container";
 import { useNavigate } from "react-router-dom";
 import Table from "../../components/tables/Table";
@@ -18,7 +18,7 @@ const headers = [
 
 const Users = () => {
   const navigate = useNavigate();
-  const { users, userData, setUsers } = useContext(AccountContext);
+  const { users, userData, setUsers } = useContext(Context);
   const { id } = userData["datos_sesion"];
 
   const [isLoading, setIsLoading] = useState(false);

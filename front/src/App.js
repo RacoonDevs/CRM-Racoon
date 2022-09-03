@@ -1,5 +1,5 @@
 import React from "react";
-import { AppProvider } from "./AppContext/AppProvider";
+import AppProvider from "./AppContext/AppProvider";
 import AppRouter from "./router/AppRouter";
 
 function App() {

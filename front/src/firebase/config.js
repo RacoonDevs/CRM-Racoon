@@ -30,7 +30,7 @@ export async function uploadFile(file) {
   return url;
 }
 
-export function defelteProfileImage(file) {
+export function deleteProfileImage(file) {
   const desertRef = ref(storage, `photo_profile/${file}`);
 
   deleteObject(desertRef)

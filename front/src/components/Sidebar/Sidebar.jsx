@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import { useNavigate } from "react-router-dom";
 import {
   FaBook,
@@ -27,8 +27,7 @@ export const listBg = [
 /* background by SVGBackgrounds.com */
 
 const Sidebar = ({ children }) => {
-  const { logout, userData, bgSelected, userDetails } =
-    useContext(AccountContext);
+  const { logout, profile, bgSelected, profileDetails } = useContext(Context);
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
@@ -85,25 +84,26 @@ const Sidebar = ({ children }) => {
           onClick={() => navigate("/perfil")}
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          {!userDetails.photo_url && (
+          {!profileDetails?.photo_url && (
             <p>
               <FaUserCircle
-                size={40}
+                size={45}
                 fill={"white"}
                 className={` cursor-pointer duration-500 rounded-full`}
               />
             </p>
           )}
-          {userDetails.photo_url !== null && (
-            <div className=" h-[40px] w-[40px] cursor-pointer rounded-full">
-              <img
-                src={userDetails.photo_url}
-                alt={"profile"}
-                className={
-                  "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
-                }
-              />
-            </div>
+          {profileDetails?.photo_url !== undefined && (
+            // <p className="  cursor-pointer rounded-full">
+            <img
+              width={"40px"}
+              src={profileDetails.photo_url}
+              alt={"profile"}
+              className={
+                "inline-block h-[40px] w-[40px] object-cover cursor-pointer duration-500  rounded-full ring-2 ring-white"
+              }
+            />
+            // </p>
           )}
           <span
             className={` cursor-pointer ${!open && "scale-0"} ${
@@ -111,7 +111,7 @@ const Sidebar = ({ children }) => {
             }  `}
           >
             <p className={`text-white origin-left font-medium text-xl`}>
-              {userData ? userData["datos_sesion"].name : "Usuario"}
+              {profile ? profile["datos_sesion"].name : "Usuario"}
             </p>
             <div
               className={`text-light-blue font-bold text-xs gap-2 flex items-center justify-start `}

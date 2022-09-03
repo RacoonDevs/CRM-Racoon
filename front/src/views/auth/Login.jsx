@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import { useNavigate } from "react-router-dom";
 import ContainerForm from "../../components/containers/ContainerForm";
 import TextInputAuth from "../../components/inputs/TextInputAuth";
@@ -12,7 +12,7 @@ import PasswordTextAuth from "../../components/inputs/PasswordTextAuth";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { authenticate } = useContext(AccountContext);
+  const { authenticate } = useContext(Context);
 
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");

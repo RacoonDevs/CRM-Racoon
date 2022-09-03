@@ -4,13 +4,13 @@ import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/api";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
 import DropdownInput from "../../components/inputs/DropdownInput";
 
 const CreateUsers = () => {
-  const { userData } = useContext(AccountContext);
+  const { userData } = useContext(Context);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [repeatPassword, setRepeatPassword] = useState("");

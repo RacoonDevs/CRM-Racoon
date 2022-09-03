@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import { FaUserCircle, FaUpload } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
 import Container from "../../components/containers/Container";
@@ -8,55 +8,39 @@ import TextInput from "../../components/inputs/TextInput";
 import { Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
-import {
-  getUserDataDetails,
-  updateUsers,
-  updateUsersDetails,
-} from "../../api/api";
+import { updateUsers, updateUsersDetails } from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
-import { uploadFile } from "../../firebase/config";
+import { deleteProfileImage, uploadFile } from "../../firebase/config";
+import { GET_PROFILE, GET_PROFILE_DETAILS } from "../../AppContext/Types";
+
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const Profile = () => {
-  const { userData, setUserData, userDetails, setUserDetails } =
-    useContext(AccountContext);
-  const { name, email, id, status, user_name } = userData["datos_sesion"];
+  const { profile, profileDetails, getProfileDetails, dispatch } =
+    useContext(Context);
+  const { name, email, id, status, user_name } = profile["datos_sesion"];
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [newPhoto, setNewPhoto] = useState(null);
   const [localPhoto, setLocalPhoto] = useState(null);
+
   const [user, setUser] = useState({
     name: name ?? "",
     email: email ?? "",
-    phone: userDetails.phone ?? "",
-    address: userDetails.address ?? "",
-    birthdate: userDetails.birthdate ?? "",
-    photo_url: userDetails.photo_url ?? null,
+    phone: profileDetails.phone ?? "",
+    address: profileDetails.address ?? "",
+    birthdate: profileDetails.birthdate ?? "",
+    photo_url: profileDetails.photo_url ?? null,
+    idDetails: profileDetails.id,
   });
-  console.log(userDetails);
 
   useEffect(() => {
-    if (userDetails) {
-      console.log("el id", id);
-      getUserDetails(id);
-    }
+    getProfileDetails(id);
   }, []);
-
-  const getUserDetails = async (id) => {
-    const response = await getUserDataDetails({ id: id });
-    setUser({
-      ...user,
-      photo_url: response[0].photo_url,
-      address: response[0].address,
-      birthdate: response[0].birthdate,
-      phone: response[0].phone,
-    });
-    // return setUserDetails(response[0]);
-  };
 
   const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
-
+  console.log(profile);
   const saveChanges = async () => {
     setIsLoading(true);
     const send = {
@@ -71,6 +55,9 @@ const Profile = () => {
 
     if (newPhoto) {
       try {
+        // if (user.photo_url) {
+        //   deleteProfileImage(user.photo_url);
+        // }
         const result = await uploadFile(newPhoto);
         setUser({ ...user, photo_url: result });
         profile = result;
@@ -88,22 +75,23 @@ const Profile = () => {
 
     updateUsers(id, send)
       .then((data) => {
+        console.log("esta data:", data);
         notify(data.users);
-        const oldData = JSON.parse(localStorage.getItem("sesion"));
+        const oldData = JSON.parse(localStorage.getItem("profile"));
         oldData["datos_sesion"].name = user.name;
         oldData["datos_sesion"].email = user.email;
 
-        localStorage.setItem("sesion", JSON.stringify(oldData));
+        localStorage.setItem("profile", JSON.stringify(oldData));
 
-        updateUsersDetails(id, userDetails)
+        updateUsersDetails(user.idDetails, userDetails)
           .then(() => {
-            // notify(res.users);
-            // setUserDetails({
-            //   ...userDetails,
-            //   photo_url: userDetails.photo_url,
+            const concatData = profile.datos_sesion.concat(send);
+            console.log("concat", concatData);
+            dispatch({ type: GET_PROFILE_DETAILS, payload: userDetails });
+            // dispatch({
+            //   type: GET_PROFILE,
+            //   payload: concatData,
             // });
-            setUserData({ name: user.name });
-            setUserDetails({ photo_url: profile });
             setIsLoading(false);
           })
           .catch((err) => {
@@ -143,7 +131,7 @@ const Profile = () => {
       _onCancel={() => navigate(-1)}
       _onSave={saveChanges}
     >
-      <div className="justify-center gap-10 grid grid-cols-1 md:grid-cols-2">
+      <div className="justify-center gap-10 grid grid-cols-1 lg:grid-cols-2">
         <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
           <Label text={"Foto de perfil"} size={"16px"} />
           <div>

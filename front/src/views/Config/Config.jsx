@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import Container from "../../components/containers/Container";
 import { listBg } from "../../components/Sidebar/Sidebar";
 import { H3 } from "../../components/Titles";
 
 const Config = () => {
-  const { setBgSelected } = useContext(AccountContext);
+  const { getBgSelected } = useContext(Context);
 
   const setBg = (bg) => {
     localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: bg }));
-    setBgSelected({ bgSelected: bg });
+    getBgSelected({ bgSelected: bg });
   };
   return (
     <Container nameSection={"Configuraciones"}>

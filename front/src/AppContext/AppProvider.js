@@ -1,98 +1,152 @@
-import React, { useState, useEffect, createContext } from "react";
-import { getAllUsers, getUserDataDetails, UrlEnv } from "../api/api";
+import React, { useReducer, useEffect } from "react";
 import qs from "qs";
 import axios from "axios";
+import Context from "./Context";
+import Reducer from "./Reducer";
+import {
+  GET_PROFILE,
+  GET_PROFILE_DETAILS,
+  GET_USERS,
+  GET_USER_DETAILS,
+  LOGOUT,
+  SELECT_BG,
+} from "./Types";
 
-const AccountContext = createContext();
+export const UrlEnv = process.env.REACT_APP_API_URL;
 
 const AppProvider = (props) => {
-  const [userData, setUserData] = useState({ sesion: false });
-  const [userDetails, setUserDetails] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [bgSelected, setBgSelected] = useState({ bgSelected: 0 });
+  const initialState = {
+    profile: { sesion: null },
+    profileDetails: [],
+    users: [],
+    bgSelected: 0,
+  };
+  const [state, dispatch] = useReducer(Reducer, initialState);
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem("sesion"));
-    if (items) {
-      setUserData(items);
+    const data = JSON.parse(localStorage.getItem("profile"));
+    if (data) {
+      dispatch({ type: GET_PROFILE, payload: data });
+      console.log(data.datos_sesion.id);
+      getProfileDetails(data.datos_sesion.id);
+    } else {
+      initialState.profile.sesion = false;
     }
     if (JSON.parse(localStorage.getItem("bgSelected")) !== null) {
-      setBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
+      getBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
     } else {
       localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
     }
-    if (userData.sesion === true) {
-      getMyUsers(items.datos_sesion.id);
-      getUserDetails(items.datos_sesion.id);
+  }, []);
+
+  const getProfileDetails = async (info) => {
+    try {
+      const response = await axios.post(
+        `${UrlEnv}usersDetails/getUsersDetails`,
+        qs.stringify({ id: info })
+      );
+      const data = await response.data.users[0];
+      dispatch({ type: GET_PROFILE_DETAILS, payload: data });
+    } catch (err) {
+      console.log("Ocurrio un error inesperado (profileDetails): ", err);
     }
-  }, [userData.sesion, !userDetails]);
-
-  // useEffect(() => {
-  //   if (userData.sesion === true) {
-  //     getMyUsers(userData.datos_sesion.id);
-  //     getUserDetails(userData.datos_sesion.id);
-  //   }
-  // }, [userData.sesion && userData.datos_sesion.id]);
-
-  const getMyUsers = async (id) => {
-    const response = await getAllUsers({ id: id });
-    setUsers(response);
   };
 
-  const getUserDetails = async (id) => {
-    const response = await getUserDataDetails({ id: id });
-    setUserDetails(response[0]);
+  const getProfile = async (data) => {
+    dispatch({ type: GET_PROFILE, payload: data });
+  };
+
+  const getAllUsers = async (info) => {
+    try {
+      const res = await axios.post(
+        `${UrlEnv}users/getUsers`,
+        qs.stringify({ id: info })
+      );
+      const data = await res.data.data.users;
+      console.log("all users: ", data);
+      dispatch({ type: GET_USERS, payload: data });
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+    }
+  };
+
+  const getUsersDetails = async (info) => {
+    try {
+      const response = await axios.post(
+        `${UrlEnv}usersDetails/getUsersDetails`,
+        qs.stringify(info)
+      );
+      const data = await response.data.users;
+      console.log("user details: ", data);
+      dispatch({ type: GET_USER_DETAILS, payload: data });
+    } catch (err) {
+      console.log("Ocurrio un error inesperado (userDetails): ", err);
+    }
+  };
+
+  const getBgSelected = (data) => {
+    dispatch({ type: SELECT_BG, payload: data });
+    localStorage.setItem("bgSelected", JSON.stringify(data));
   };
 
   const authenticate = async (email, pass) => {
-    await new Promise((resolve, reject) => {
-      const data = {
-        email: email,
-        password: pass,
-      };
-      axios
-        .post(`${UrlEnv}auth/login`, qs.stringify(data))
-        .then(({ data }) => {
-          setUserData(data);
-          localStorage.setItem("sesion", JSON.stringify(data));
-          resolve(data);
-        })
-        .catch((err) => reject(err));
-    });
+    try {
+      const response = await axios.post(
+        `${UrlEnv}auth/login`,
+        qs.stringify({ email: email, password: pass })
+      );
+      const data = await response.data;
+      dispatch({ type: GET_PROFILE, payload: data });
+      localStorage.setItem("profile", JSON.stringify(data));
+      getProfileDetails(data.datos_sesion.id);
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+    }
   };
 
   const logout = async () => {
-    await new Promise((resolve, reject) => {
-      axios
-        .post(`${UrlEnv}auth/logout`)
-        .then(() => {
-          setUserData({ sesion: false });
-          localStorage.removeItem("sesion");
-          resolve(true);
-        })
-        .catch((err) => reject(err));
-    });
+    try {
+      const response = await axios.post(`${UrlEnv}auth/logout`);
+      const data = await response.data;
+      dispatch({ type: LOGOUT, payload: initialState });
+      localStorage.removeItem("profile");
+      console.log("auth: ", data);
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+    }
   };
 
   return (
-    <AccountContext.Provider
+    <Context.Provider
       value={{
-        authenticate,
-        userData,
-        setUserData,
-        users,
-        setUsers,
-        userDetails,
-        setUserDetails,
-        getUserDetails,
-        bgSelected,
-        setBgSelected,
         logout,
+        authenticate,
+        getProfileDetails,
+        getAllUsers,
+        getUsersDetails,
+        getProfile,
+        profile: state.profile,
+        profileDetails: state.profileDetails,
+        getBgSelected,
+        bgSelected: state.bgSelected,
+        dispatch,
       }}
     >
       {props.children}
-    </AccountContext.Provider>
+    </Context.Provider>
   );
 };
 
-export { AppProvider, AccountContext };
+export default AppProvider;
+
+// useEffect(() => {
+//   const items = JSON.parse(localStorage.getItem("sesion"));
+//   if (items) {
+//     setUserData(items);
+//   }
+//   if (JSON.parse(localStorage.getItem("bgSelected")) !== null) {
+//     setBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
+//   } else {
+//     localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
+//   }
+// }, []);

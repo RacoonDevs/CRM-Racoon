@@ -4,7 +4,7 @@ import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { useNavigate, useParams } from "react-router-dom";
 import { changePasswordUsers, updateUsers } from "../../api/api";
-import { AccountContext } from "../../AppContext/AppProvider";
+import Context from "../../AppContext/Context";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
 import DropdownInput from "../../components/inputs/DropdownInput";
@@ -13,7 +13,7 @@ import { FaLock } from "react-icons/fa";
 
 const EditUsers = () => {
   const { id } = useParams();
-  const { userData, users } = useContext(AccountContext);
+  const { userData, users } = useContext(Context);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [newPassword, setNewPassword] = useState("");

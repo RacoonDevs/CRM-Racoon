@@ -1,6 +1,6 @@
 import React, { Suspense, useContext, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AccountContext } from "../AppContext/AppProvider";
+import Context from "../AppContext/Context";
 import { AlreadyLoginRoute, PrivateRoute } from "./RoutesSettings";
 import { Loading } from "../components/Loading";
 import Login from "../views/auth/Login";
@@ -15,30 +15,29 @@ const AddUsers = lazy(() => import("../views/users/CreateUsers"));
 const EditUsers = lazy(() => import("../views/users/EditUsers"));
 
 const AppRouter = () => {
-  const { userData } = useContext(AccountContext);
-
+  const { profile } = useContext(Context);
   return (
     <Suspense fallback={<Loading />}>
-      {userData.sesion === null ? (
+      {profile.sesion === null ? (
         <Loading />
       ) : (
         <Router>
           <Routes>
-            {userData.sesion === false && (
+            {profile.sesion === false && (
               <Route
                 path="*"
                 element={
-                  <AlreadyLoginRoute status={userData.sesion}>
+                  <AlreadyLoginRoute status={profile.sesion}>
                     <Login />
                   </AlreadyLoginRoute>
                 }
               />
             )}
-            {userData.sesion === true && (
+            {profile.sesion === true && (
               <Route
                 path="*"
                 element={
-                  <PrivateRoute status={userData.sesion}>
+                  <PrivateRoute status={profile.sesion}>
                     <AuthRoutes />
                   </PrivateRoute>
                 }
