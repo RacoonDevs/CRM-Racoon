@@ -11,10 +11,12 @@ const PasswordInput = ({
   onChange,
   isVisible,
   setIsVisible,
+  name,
 }) => {
   return (
     <Container>
       <InputText
+        name={name}
         value={value}
         type={isVisible ? "text" : "password"}
         width={width}

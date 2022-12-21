@@ -1,94 +1,36 @@
 import qs from "qs";
 import axios from "axios";
 
-export const UrlEnv = process.env.REACT_APP_API_URL;
+export const urlEnv = process.env.REACT_APP_API_URL;
 
-export const createUser = async (data) =>
-  await new Promise((resolve, reject) => {
-    axios
-      .post(`${UrlEnv}users/create`, qs.stringify(data))
-      .then(({ data }) => {
-        resolve(data);
-      })
-      .catch((err) => reject(err));
-  });
-
-export const updateUsers = async (id, data) => {
-  const peticion = axios.post(
-    `${UrlEnv}users/update/${id}`,
-    qs.stringify(data)
-  );
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data;
-  return info;
+const config = {
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
 };
 
-export const updateUsersDetails = async (id, data) => {
-  const peticion = axios.post(
-    `${UrlEnv}usersDetails/update/${id}`,
-    qs.stringify(data)
-  );
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data;
-  return info;
+export const handleRegisterUser = (body) =>
+  axios.post(`${urlEnv}auth/signUp`, body, config);
+
+export const handleLoginUser = (body) =>
+  axios.post(`${urlEnv}auth/signIn`, body, config);
+
+export const handleIsAuth = (token) => {
+  config.headers["x-access-token"] = token;
+  return axios.get(`${urlEnv}auth/pingAuth`, config);
 };
 
-export const changePasswordUsers = async (id, data) => {
-  const peticion = axios.post(
-    `${UrlEnv}users/updatePassword/${id}`,
-    qs.stringify(data)
-  );
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data;
-  return info;
+export const handleUpdateUser = (token, body, id) => {
+  config.headers["x-access-token"] = token;
+  return axios.put(`${urlEnv}auth/${id}`, body, config);
+};
+export const handleUpdatePassword = (token, body, id) => {
+  config.headers["x-access-token"] = token;
+  return axios.put(`${urlEnv}auth/updatePassword/${id}`, body, config);
 };
 
-export const deleteUSer = async (id, params) => {
-  const peticion = axios.post(
-    `${UrlEnv}users/delete/${id}`,
-    qs.stringify(params)
-  );
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data;
-  return info;
+export const deleteUserRequest = async (token, id) => {
+  config.headers["x-access-token"] = token;
+  await axios.delete(`${urlEnv}user/${id}`, config);
 };
-
-export const getAllUsers = async (data) => {
-  const peticion = axios.post(`${UrlEnv}users/getUsers`, qs.stringify(data));
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data["users"];
-  return info;
-};
-
-export const getUserDataDetails = async (data) => {
-  const peticion = axios.post(
-    `${UrlEnv}usersDetails/getUsersDetails`,
-    qs.stringify(data)
-  );
-  const response = await peticion.then((data) => {
-    return data;
-  });
-  const info = await response.data["users"];
-  return info;
-};
-
-// export const getUserData = async (route, data) =>
-//   await new Promise((resolve, reject) => {
-//     axios
-//       .post(`${UrlEnv}${route}`, qs.stringify(data))
-//       .then(({ data }) => {
-//         localStorage.setItem("userData", JSON.stringify(data));
-//         resolve(data);
-//       })
-//       .catch((err) => reject(err));
-//   });

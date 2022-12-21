@@ -4,7 +4,6 @@ import Context from "../../AppContext/Context";
 import Container from "../../components/containers/Container";
 import { useNavigate } from "react-router-dom";
 import Table from "../../components/tables/Table";
-import { deleteUSer } from "../../api/api";
 import { HashLoader } from "react-spinners";
 
 const headers = [
@@ -18,8 +17,7 @@ const headers = [
 
 const Users = () => {
   const navigate = useNavigate();
-  const { users, userData, setUsers } = useContext(Context);
-  const { id } = userData["datos_sesion"];
+  const { user, employees, getDeleteUser } = useContext(Context);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,19 +28,13 @@ const Users = () => {
     navigate(`/usuarios/editar_usuario/${id}`);
   };
 
-  const userDelete = (user) => {
+  const onUserDelete = (id) => {
     setIsLoading(true);
-    const params = { delete_user: 1, updated_by: id };
-    deleteUSer(user, params)
-      .then((data) => {
-        notify(data.users);
-        setUsers(users.filter((item) => item.id !== user));
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        notifyError(err?.users);
-        setIsLoading(false);
-      });
+    getDeleteUser(id);
+    notifyError(
+      "Se ha producido un error al guardar los cambios intente más tarde."
+    );
+    notify("Los cambios se han guardado correctamente");
   };
 
   return (
@@ -55,12 +47,12 @@ const Users = () => {
         _isAddButton={true}
         onClickAddButton={() => navigate("/usuarios/agregar_usuarios")}
         textAddButton={"Agregar usuario"}
-        body={users}
+        body={employees}
         doDelete={true}
         doEdit={true}
         doShow={true}
         onEdit={editUser}
-        onDelete={userDelete}
+        onDelete={onUserDelete}
       />
       <Toaster />
     </Container>

@@ -1,44 +1,51 @@
-import React, { Suspense, useContext, lazy } from "react";
+import React, { Suspense, useContext, lazy, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Context from "../AppContext/Context";
 import { AlreadyLoginRoute, PrivateRoute } from "./RoutesSettings";
 import { Loading } from "../components/Loading";
 import Login from "../views/auth/Login";
+import Register from "../views/auth/Register";
 const Dashboard = lazy(() => import("../views/dashboard/Dasboard"));
 const Sidebar = lazy(() => import("../components/Sidebar/Sidebar"));
 const Profile = lazy(() => import("../views/profile/Profile"));
 const Projects = lazy(() => import("../views/projects/Projects"));
 const Tasks = lazy(() => import("../views/tasks/Tasks"));
 const Config = lazy(() => import("../views/Config/Config"));
+const Teams = lazy(() => import("../views/teams/Teams"));
 const Users = lazy(() => import("../views/users/Users"));
 const AddUsers = lazy(() => import("../views/users/CreateUsers"));
 const EditUsers = lazy(() => import("../views/users/EditUsers"));
 
 const AppRouter = () => {
-  const { profile } = useContext(Context);
+  const { user } = useContext(Context);
+  const [status, setStatus] = useState(null);
+  useEffect(() => {
+    setStatus(user.length <= 0 ? false : true);
+  }, [user]);
+
   return (
     <Suspense fallback={<Loading />}>
-      {profile.sesion === null ? (
+      {status === null ? (
         <Loading />
       ) : (
         <Router>
           <Routes>
-            {profile.sesion === false && (
+            {!status && (
               <Route
                 path="*"
                 element={
-                  <AlreadyLoginRoute status={profile.sesion}>
-                    <Login />
+                  <AlreadyLoginRoute status={status}>
+                    <AuthRoutes />
                   </AlreadyLoginRoute>
                 }
               />
             )}
-            {profile.sesion === true && (
+            {status && (
               <Route
                 path="*"
                 element={
-                  <PrivateRoute status={profile.sesion}>
-                    <AuthRoutes />
+                  <PrivateRoute status={status}>
+                    <UserRoutes />
                   </PrivateRoute>
                 }
               />
@@ -52,7 +59,7 @@ const AppRouter = () => {
 
 export default AppRouter;
 
-const AuthRoutes = () => {
+const UserRoutes = () => {
   return (
     <>
       <Sidebar>
@@ -61,6 +68,7 @@ const AuthRoutes = () => {
           <Route path="/proyectos" element={<Projects />} />
           <Route path="/tareas" element={<Tasks />} />
           <Route path="/configuraciones" element={<Config />} />
+          <Route path="/teams" element={<Teams />} />
           <Route path="/usuarios" element={<Users />} />
           <Route path="/usuarios/agregar_usuarios" element={<AddUsers />} />
           <Route path="/usuarios/editar_usuario/:id" element={<EditUsers />} />
@@ -68,6 +76,18 @@ const AuthRoutes = () => {
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Sidebar>
+    </>
+  );
+};
+
+const AuthRoutes = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Login />} />
+      </Routes>
     </>
   );
 };

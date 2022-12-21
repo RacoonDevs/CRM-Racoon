@@ -1,9 +1,15 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-const BasicButton = ({ text, bgColor, onClick }) => {
+const BasicButton = ({ text, bgColor, onClick, type, disabled }) => {
   return (
-    <Button onClick={onClick} type="submit" name={"send"} bgColor={bgColor}>
+    <Button
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+      name={"send"}
+      bgColor={bgColor}
+    >
       {text ? text : "Button"}
     </Button>
   );

@@ -1,134 +1,180 @@
 import React, { useReducer, useEffect } from "react";
-import qs from "qs";
-import axios from "axios";
 import Context from "./Context";
 import Reducer from "./Reducer";
+import { GET_LOGOUT, GET_SIGNIN, GET_SIGNUP, SET_BG } from "./Types";
 import {
-  GET_PROFILE,
-  GET_PROFILE_DETAILS,
-  GET_USERS,
-  GET_USER_DETAILS,
-  LOGOUT,
-  SELECT_BG,
-} from "./Types";
-
-export const UrlEnv = process.env.REACT_APP_API_URL;
+  deleteUserRequest,
+  handleIsAuth,
+  handleLoginUser,
+  handleRegisterUser,
+  handleUpdatePassword,
+  handleUpdateUser,
+} from "../api/api";
 
 const AppProvider = (props) => {
   const initialState = {
-    profile: { sesion: null },
-    profileDetails: [],
-    users: [],
+    user: [],
+    employees: [],
     bgSelected: 0,
   };
+
   const [state, dispatch] = useReducer(Reducer, initialState);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("profile"));
+    const data = JSON.parse(localStorage.getItem("user"));
     if (data) {
-      dispatch({ type: GET_PROFILE, payload: data });
-      console.log(data.datos_sesion.id);
-      getProfileDetails(data.datos_sesion.id);
+      if (!data?.user) {
+        return localStorage.removeItem("user");
+      }
+      dispatch({ type: GET_SIGNIN, payload: data });
+      dispatch({ type: SET_BG, payload: data.user.bgSelected });
+      verifyAuth(data.token);
     } else {
-      initialState.profile.sesion = false;
-    }
-    if (JSON.parse(localStorage.getItem("bgSelected")) !== null) {
-      getBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
-    } else {
-      localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
+      dispatch({ type: GET_LOGOUT });
     }
   }, []);
 
-  const getProfileDetails = async (info) => {
+  const verifyAuth = (token) => {
     try {
-      const response = await axios.post(
-        `${UrlEnv}usersDetails/getUsersDetails`,
-        qs.stringify({ id: info })
-      );
-      const data = await response.data.users[0];
-      dispatch({ type: GET_PROFILE_DETAILS, payload: data });
-    } catch (err) {
-      console.log("Ocurrio un error inesperado (profileDetails): ", err);
+      if (token) {
+        handleIsAuth(token)
+          .then((response) => {
+            if (response.data.message !== "isAuth") {
+              localStorage.removeItem("user");
+              dispatch({ type: GET_LOGOUT });
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const getProfile = async (data) => {
-    dispatch({ type: GET_PROFILE, payload: data });
-  };
-
-  const getAllUsers = async (info) => {
+  const getRegister = async (body) => {
     try {
-      const res = await axios.post(
-        `${UrlEnv}users/getUsers`,
-        qs.stringify({ id: info })
-      );
-      const data = await res.data.data.users;
-      console.log("all users: ", data);
-      dispatch({ type: GET_USERS, payload: data });
-    } catch (err) {
-      console.log("Ocurrio un error inesperado: ", err);
-    }
-  };
+      const res = await handleRegisterUser(body);
 
-  const getUsersDetails = async (info) => {
-    try {
-      const response = await axios.post(
-        `${UrlEnv}usersDetails/getUsersDetails`,
-        qs.stringify(info)
-      );
-      const data = await response.data.users;
-      console.log("user details: ", data);
-      dispatch({ type: GET_USER_DETAILS, payload: data });
-    } catch (err) {
-      console.log("Ocurrio un error inesperado (userDetails): ", err);
-    }
-  };
+      localStorage.setItem("user", JSON.stringify(res.data));
+      dispatch({ type: GET_SIGNUP, payload: res.data });
 
-  const getBgSelected = (data) => {
-    dispatch({ type: SELECT_BG, payload: data });
-    localStorage.setItem("bgSelected", JSON.stringify(data));
-  };
-
-  const authenticate = async (email, pass) => {
-    try {
-      const response = await axios.post(
-        `${UrlEnv}auth/login`,
-        qs.stringify({ email: email, password: pass })
-      );
-      const data = await response.data;
-      dispatch({ type: GET_PROFILE, payload: data });
-      localStorage.setItem("profile", JSON.stringify(data));
-      getProfileDetails(data.datos_sesion.id);
+      if (window.location.pathname === "/auth") {
+        const url = window.localStorage.getItem("route");
+        if (url) {
+          window.location.replace(url);
+        }
+      }
     } catch (err) {
       console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
     }
   };
 
-  const logout = async () => {
+  const getLogin = async (body) => {
     try {
-      const response = await axios.post(`${UrlEnv}auth/logout`);
-      const data = await response.data;
-      dispatch({ type: LOGOUT, payload: initialState });
-      localStorage.removeItem("profile");
-      console.log("auth: ", data);
+      const res = await handleLoginUser(body);
+
+      dispatch({ type: GET_SIGNIN, payload: res.data });
+      localStorage.setItem("user", JSON.stringify(res.data));
+
+      if (window.location.pathname === "/auth") {
+        const url = window.localStorage.getItem("route");
+        if (url) {
+          window.location.replace(url);
+        }
+      }
     } catch (err) {
       console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
     }
+  };
+
+  const getUpdateUser = async (body) => {
+    try {
+      const res = await handleUpdateUser(
+        state.user.token,
+        body,
+        state.user.user.id
+      )
+        .then((response) => {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          dispatch({ type: GET_SIGNIN, payload: response.data });
+          if (response.data.user.bgSelected !== state.bgSelected) {
+            dispatch({
+              type: SET_BG,
+              payload: response.data.user.bgSelected,
+            });
+          }
+          return response;
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
+      return res;
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
+    }
+  };
+
+  const getUpdatePassword = async (body) => {
+    try {
+      const res = await handleUpdatePassword(
+        state.user.token,
+        body,
+        state.user.user.id
+      )
+        .then((response) => {
+          return response.data;
+        })
+        .catch((err) => {
+          console.error(err.response.data);
+          return err.response.data;
+        });
+      return res;
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
+    }
+  };
+
+  const getDeleteUser = async (id) => {
+    try {
+      const response = await deleteUserRequest(state.user.token, id);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+      return err.response.data;
+    }
+  };
+
+  const getChangePassword = () => {
+    console.log("changin password");
+  };
+
+  const getCloseSesion = () => {
+    localStorage.removeItem("user");
+    dispatch({ type: GET_LOGOUT });
+    window.location.reload();
   };
 
   return (
     <Context.Provider
       value={{
-        logout,
-        authenticate,
-        getProfileDetails,
-        getAllUsers,
-        getUsersDetails,
-        getProfile,
-        profile: state.profile,
-        profileDetails: state.profileDetails,
-        getBgSelected,
+        getLogin,
+        getRegister,
+        getUpdateUser,
+        getUpdatePassword,
+        getCloseSesion,
+        getChangePassword,
+        getDeleteUser,
+        user: state.user,
         bgSelected: state.bgSelected,
+        employees: state.employees,
         dispatch,
       }}
     >
@@ -138,15 +184,3 @@ const AppProvider = (props) => {
 };
 
 export default AppProvider;
-
-// useEffect(() => {
-//   const items = JSON.parse(localStorage.getItem("sesion"));
-//   if (items) {
-//     setUserData(items);
-//   }
-//   if (JSON.parse(localStorage.getItem("bgSelected")) !== null) {
-//     setBgSelected(JSON.parse(localStorage.getItem("bgSelected")));
-//   } else {
-//     localStorage.setItem("bgSelected", JSON.stringify({ bgSelected: 0 }));
-//   }
-// }, []);

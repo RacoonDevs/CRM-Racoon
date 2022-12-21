@@ -7,10 +7,12 @@ import {
   FaClipboardList,
   FaLongArrowAltRight,
   FaPowerOff,
-  FaUser,
+  FaUsers,
   FaUserCircle,
+  FaStaylinked,
 } from "react-icons/fa";
 import { AiFillSetting, AiFillHome } from "react-icons/ai";
+import LogoRacoon from "../../assets/img/Logo_Blanco.png";
 
 export const listBg = [
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%232009ac'/%3E%3Cstop offset='1' stop-color='%232009ac' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='1200' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%235a33fe'/%3E%3Cstop offset='1' stop-color='%235a33fe' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='600' cy='0' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%230a31cb'/%3E%3Cstop offset='1' stop-color='%230a31cb' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='d' cx='600' cy='800' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%239013FE'/%3E%3Cstop offset='1' stop-color='%239013FE' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='e' cx='0' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23081A51'/%3E%3Cstop offset='1' stop-color='%23081A51' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='1200' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23536DFE'/%3E%3Cstop offset='1' stop-color='%23536DFE' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='1200' height='800'/%3E%3Crect fill='url(%23b)' width='1200' height='800'/%3E%3Crect fill='url(%23c)' width='1200' height='800'/%3E%3Crect fill='url(%23d)' width='1200' height='800'/%3E%3Crect fill='url(%23e)' width='1200' height='800'/%3E%3Crect fill='url(%23f)' width='1200' height='800'/%3E%3C/svg%3E",
@@ -27,7 +29,7 @@ export const listBg = [
 /* background by SVGBackgrounds.com */
 
 const Sidebar = ({ children }) => {
-  const { logout, profile, bgSelected, profileDetails } = useContext(Context);
+  const { user, bgSelected, getCloseSesion } = useContext(Context);
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
@@ -35,7 +37,8 @@ const Sidebar = ({ children }) => {
     { title: "Dashboard", src: <AiFillHome size={24} />, url: "/dashboard" },
     { title: "Proyectos", src: <FaBook size={24} />, url: "/proyectos" },
     { title: "Tareas", src: <FaClipboardList size={24} />, url: "/tareas" },
-    { title: "Usuarios", src: <FaUser size={24} />, url: "/usuarios" },
+    { title: "Usuarios", src: <FaUsers size={24} />, url: "/usuarios" },
+    { title: "Teams", src: <FaStaylinked size={24} />, url: "/teams" },
     {
       title: "Configuraciones",
       src: <AiFillSetting size={24} />,
@@ -44,7 +47,7 @@ const Sidebar = ({ children }) => {
   ];
 
   const sesion = () => {
-    logout()
+    getCloseSesion()
       .then(() => navigate("/login"))
       .catch((err) => console.log(err));
   };
@@ -55,13 +58,11 @@ const Sidebar = ({ children }) => {
       style={{
         backgroundColor: "#081A51",
         backgroundImage: `url(
-        "${listBg[bgSelected.bgSelected]}"
+        "${listBg[bgSelected ?? 0]}"
       )`,
         backgroundAttachment: "fixed",
         backgroundSize: `${
-          bgSelected.bgSelected === 5 ||
-          bgSelected.bgSelected === 8 ||
-          bgSelected.bgSelected === 9
+          bgSelected === 5 || bgSelected === 8 || bgSelected === 9
             ? "unset"
             : "cover"
         }`,
@@ -84,7 +85,16 @@ const Sidebar = ({ children }) => {
           onClick={() => navigate("/perfil")}
           className={`flex gap-x-4 items-center h-20 hover:bg-light-white p-2 rounded-md`}
         >
-          {!profileDetails?.photo_url && (
+          {user.user.photoURL ? (
+            <img
+              width={"40px"}
+              src={user.user.photoURL}
+              alt={"profile"}
+              className={
+                "inline-block h-[40px] w-[40px] object-cover cursor-pointer duration-500  rounded-full ring-2 ring-white"
+              }
+            />
+          ) : (
             <p>
               <FaUserCircle
                 size={45}
@@ -93,25 +103,13 @@ const Sidebar = ({ children }) => {
               />
             </p>
           )}
-          {profileDetails?.photo_url !== undefined && (
-            // <p className="  cursor-pointer rounded-full">
-            <img
-              width={"40px"}
-              src={profileDetails.photo_url}
-              alt={"profile"}
-              className={
-                "inline-block h-[40px] w-[40px] object-cover cursor-pointer duration-500  rounded-full ring-2 ring-white"
-              }
-            />
-            // </p>
-          )}
           <span
             className={` cursor-pointer ${!open && "scale-0"} ${
               open && " transition delay-200 duration-200"
             }  `}
           >
             <p className={`text-white origin-left font-medium text-xl`}>
-              {profile ? profile["datos_sesion"].name : "Usuario"}
+              {user?.user?.firstName ?? "Usuario"}
             </p>
             <div
               className={`text-light-blue font-bold text-xs gap-2 flex items-center justify-start `}
@@ -164,11 +162,7 @@ const Sidebar = ({ children }) => {
       </div>
       <div className="flex-1 h-screen bg-transparent">
         <div className="text-white bg-transparent text-2xl flex gap-2 h-[8%] justify-end p-4 items-center  ">
-          <img
-            src={require(`../../assets/img/Logo_Blanco.png`)}
-            alt="crm_icon"
-            width={30}
-          />
+          <img src={LogoRacoon} alt="crm_icon" width={30} />
           <p className="font-bold">CRM RACOON</p>
         </div>
         <div className="p-4 h-[92%] bg-light-gray overflow-auto">

@@ -2,10 +2,11 @@ import React from "react";
 import styled from "@emotion/styled";
 import "./TextInputAuth.css";
 
-const CalendarInput = ({ width, height, label, value, onChange }) => {
+const CalendarInput = ({ width, height, label, value, onChange, name }) => {
   return (
     <Container>
       <InputText
+        name={name}
         value={value}
         type={"date"}
         width={width}

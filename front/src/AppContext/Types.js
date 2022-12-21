@@ -1,6 +1,5 @@
-export const GET_PROFILE = "GET_PROFILE";
-export const GET_PROFILE_DETAILS = "GET_PROFILE_DETAILS";
-export const GET_USERS = "GET_USERS";
-export const GET_USER_DETAILS = "GET_USER_DETAILS";
-export const SELECT_BG = "SELECT_BG";
-export const LOGOUT = "LOGOUT";
+export const GET_SIGNIN = "GET_SIGNIN";
+export const GET_SIGNUP = "GET_SIGNUP";
+export const GET_UPDATE_USER = "GET_UPDATE_USER";
+export const GET_LOGOUT = "GET_LOGOUT";
+export const SET_BG = "SET_BG";

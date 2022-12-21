@@ -1,41 +1,29 @@
-import {
-  GET_USERS,
-  GET_PROFILE,
-  GET_PROFILE_DETAILS,
-  SELECT_BG,
-  LOGOUT,
-} from "./Types";
+import { SET_BG, GET_SIGNIN, GET_SIGNUP, GET_LOGOUT } from "./Types";
 
 export default (state, action) => {
   const { payload, type } = action;
 
   switch (type) {
-    case GET_USERS:
+    case GET_SIGNIN:
       return {
         ...state,
-        users: payload,
+        user: payload,
       };
-    case GET_PROFILE:
+    case GET_SIGNUP:
       return {
         ...state,
-        profile: payload,
+        user: payload,
       };
-    case GET_PROFILE_DETAILS:
-      return {
-        ...state,
-        profileDetails: payload,
-      };
-    case SELECT_BG:
+    case SET_BG:
       return {
         ...state,
         bgSelected: payload,
       };
-    case LOGOUT:
+    case GET_LOGOUT:
       return {
         ...state,
-        profile: { sesion: false },
-        profileDetails: [],
-        users: [],
+        user: [],
+        employees: [],
         bgSelected: 0,
       };
     default:

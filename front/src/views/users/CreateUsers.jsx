@@ -3,7 +3,6 @@ import { Toaster, toast } from "react-hot-toast";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../../api/api";
 import Context from "../../AppContext/Context";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
@@ -43,33 +42,33 @@ const CreateUsers = () => {
         notifyError("Las contraseñas no son iguales");
         setIsLoading(false);
       } else {
-        createUser(user)
-          .then((data) => {
-            setIsLoading(false);
-            console.log(data);
-            if (data.users) {
-              notify("Usuario creado con exito");
-              setUser({
-                email: "",
-                name: "",
-                password: "",
-                status: "",
-                user_name: "",
-              });
-              setRepeatPassword("");
-            } else {
-              notifyError(
-                "Se ha producido un error al guardar la información intente más tarde."
-              );
-            }
-          })
-          .catch((err) => {
-            console.log("Failed to create user", err);
-            notifyError(
-              "Se ha producido un error al guardar la información intente más tarde."
-            );
-            setIsLoading(false);
-          });
+        // createUser(user)
+        //   .then((data) => {
+        //     setIsLoading(false);
+        //     console.log(data);
+        //     if (data.users) {
+        //       notify("Usuario creado con exito");
+        //       setUser({
+        //         email: "",
+        //         name: "",
+        //         password: "",
+        //         status: "",
+        //         user_name: "",
+        //       });
+        //       setRepeatPassword("");
+        //     } else {
+        //       notifyError(
+        //         "Se ha producido un error al guardar la información intente más tarde."
+        //       );
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.log("Failed to create user", err);
+        //     notifyError(
+        //       "Se ha producido un error al guardar la información intente más tarde."
+        //     );
+        //     setIsLoading(false);
+        //   });
       }
     }
   };

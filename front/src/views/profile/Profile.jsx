@@ -1,126 +1,132 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import Context from "../../AppContext/Context";
+import { Form, Formik } from "formik";
 import { FaUserCircle, FaUpload } from "react-icons/fa";
 import IconButton from "../../components/buttons/IconButton";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
-import { Label } from "../../components/Titles";
+import { H3, H4, Label } from "../../components/Titles";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
-import { updateUsers, updateUsersDetails } from "../../api/api";
 import CalendarInput from "../../components/inputs/CalendarInput";
 import { deleteProfileImage, uploadFile } from "../../firebase/config";
-import { GET_PROFILE, GET_PROFILE_DETAILS } from "../../AppContext/Types";
+import BasicButton from "../../components/buttons/BasicButton";
+import PasswordInput from "../../components/inputs/PasswordInput";
+import Modal from "../../components/modal/modal";
 
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const Profile = () => {
-  const { profile, profileDetails, getProfileDetails, dispatch } =
-    useContext(Context);
-  const { name, email, id, status, user_name } = profile["datos_sesion"];
+  const { user, getUpdateUser, getUpdatePassword } = useContext(Context);
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [newPhoto, setNewPhoto] = useState(null);
-  const [localPhoto, setLocalPhoto] = useState(null);
 
-  const [user, setUser] = useState({
-    name: name ?? "",
-    email: email ?? "",
-    phone: profileDetails.phone ?? "",
-    address: profileDetails.address ?? "",
-    birthdate: profileDetails.birthdate ?? "",
-    photo_url: profileDetails.photo_url ?? null,
-    idDetails: profileDetails.id,
+  const [body, setBody] = useState({
+    userName: user.user.userName ?? "",
+    firstName: user.user.firstName ?? "",
+    lastName: user.user.lastName ?? "",
+    email: user.user.email ?? "",
+    country: user.user.country ?? "",
+    address: user.user.address ?? "",
+    phone: user.user.phone ?? "",
+    bornDate: user.user.bornDate ?? "",
+    photoURL: user.user.photoURL ?? "",
   });
+  const [password, setPassword] = useState({
+    currentPassword: "",
+    newPassword: "",
+    repeatNewPassword: "",
+  });
+  const [isVisible, setIsVisible] = useState(false);
+  const [active, setActive] = useState(false);
+  const [showText, setShowText] = useState(false);
 
-  useEffect(() => {
-    getProfileDetails(id);
-  }, []);
+  const toggle = (item) => {
+    setActive(!active);
+  };
 
   const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
-  console.log(profile);
-  const saveChanges = async () => {
+
+  const onUpdatePhoto = async (newPhoto) => {
     setIsLoading(true);
-    const send = {
-      name: user.name,
-      email: user.email,
-      updated_by: id,
-      user_name: user_name,
-      status: status ? 1 : 0,
-    };
 
-    let profile = null;
-
-    if (newPhoto) {
-      try {
-        // if (user.photo_url) {
-        //   deleteProfileImage(user.photo_url);
-        // }
-        const result = await uploadFile(newPhoto);
-        setUser({ ...user, photo_url: result });
-        profile = result;
-      } catch (err) {
-        console.log(err);
-      }
+    const result = await uploadFile(newPhoto);
+    const data = { photoURL: result };
+    const res = await getUpdateUser(data);
+    if (res?.error) {
+      setIsLoading(false);
+      notifyError(
+        "Ha ocurrido un error al guardar los cambios. Intente más tarde."
+      );
     }
-    const userDetails = {
-      photo_url: profile ?? user.photo_url,
-      address: user.address,
-      phone: user.phone,
-      birthdate: user.birthdate,
-      updated_by: id,
-    };
+    if (res?.status === 200) {
+      setIsLoading(false);
+      notify("Los cambios se han guardado con exito.");
+    }
+    setIsLoading(false);
+  };
 
-    updateUsers(id, send)
-      .then((data) => {
-        console.log("esta data:", data);
-        notify(data.users);
-        const oldData = JSON.parse(localStorage.getItem("profile"));
-        oldData["datos_sesion"].name = user.name;
-        oldData["datos_sesion"].email = user.email;
+  const onUpdateUser = async (data) => {
+    setIsLoading(true);
+    const parseDate = data.bornDate.substring(0, 10);
+    data.bornDate = parseDate;
+    if (
+      data.userName === user.user.userName &&
+      data.firstName === user.user.firstName &&
+      data.lastName === user.user.lastName &&
+      data.email === user.user.email &&
+      data.phone === user.user.phone &&
+      data.country === user.user.country &&
+      data.address === user.user.address &&
+      data.bornDate === user.user.bornDate.substring(0, 10)
+    ) {
+      setIsLoading(false);
+      return notifyError("No se detectaron cambios en la informacón.");
+    }
 
-        localStorage.setItem("profile", JSON.stringify(oldData));
+    const res = await getUpdateUser(data);
+    if (res?.error) {
+      setIsLoading(false);
+      notifyError(
+        "Ha ocurrido un error al guardar los cambios. Intente más tarde."
+      );
+    }
+    if (res?.status === 200) {
+      setIsLoading(false);
+      notify("Los cambios se han guardado con exito.");
+    }
+    setIsLoading(false);
+  };
 
-        updateUsersDetails(user.idDetails, userDetails)
-          .then(() => {
-            const concatData = profile.datos_sesion.concat(send);
-            console.log("concat", concatData);
-            dispatch({ type: GET_PROFILE_DETAILS, payload: userDetails });
-            // dispatch({
-            //   type: GET_PROFILE,
-            //   payload: concatData,
-            // });
-            setIsLoading(false);
-          })
-          .catch((err) => {
-            notifyError(
-              "Se ha producido un error al guardar los cambios intente más tarde.",
-              err
-            );
-            setIsLoading(false);
-          });
-      })
-      .catch((err) => {
-        console.log("Failed to update data", err);
-        notifyError(
-          "Se ha producido un error al guardar los cambios intente más tarde."
-        );
-        setIsLoading(false);
-      });
+  const onUpdatePassword = async (data) => {
+    setIsLoading(true);
+    if (!data.currentPassword || !data.newPassword || !data.repeatNewPassword) {
+      setIsLoading(false);
+      return notifyError("Todos los campos son obligatorios.");
+    }
+    if (data.newPassword !== data.repeatNewPassword) {
+      setIsLoading(false);
+      return notifyError("La nueva contraseña no coincide.");
+    }
+    const res = await getUpdatePassword(data);
+    if (res?.error) {
+      setIsLoading(false);
+      notifyError(res.error);
+    }
+    if (res?.message) {
+      setIsLoading(false);
+      notify(res.message);
+    }
+    setIsLoading(false);
   };
 
   const hiddenFileInput = React.useRef(null);
-
   const handleClick = (event) => {
     event.preventDefault();
     hiddenFileInput.current.click();
-  };
-
-  const handleSelectPhoto = (file) => {
-    setNewPhoto(file);
-    setLocalPhoto(URL.createObjectURL(file));
   };
 
   return (
@@ -128,88 +134,208 @@ const Profile = () => {
       _isHeaderButtons={true}
       height={"auto"}
       nameSection={"Mi perfil"}
+      _needCancel={true}
       _onCancel={() => navigate(-1)}
-      _onSave={saveChanges}
     >
       <div className="justify-center gap-10 grid grid-cols-1 lg:grid-cols-2">
-        <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
-          <Label text={"Foto de perfil"} size={"16px"} />
-          <div>
-            {!user.photo_url && !newPhoto && (
-              <FaUserCircle
-                onClick={handleClick}
-                size={150}
-                fill={"#58585F"}
-                className={` cursor-pointer duration-500 rounded-full`}
-              />
-            )}
-            {user.photo_url && !newPhoto && (
-              <div
-                onClick={handleClick}
-                className=" h-44 w-44 cursor-pointer rounded-full"
-              >
-                <img
-                  className={
-                    "inline-block w-full h-full object-cover rounded-full ring-4 ring-slate-200"
-                  }
-                  src={user.photo_url}
-                  alt={"foto_perfil"}
+        <Formik
+          enableReinitialize={true}
+          initialValues={body}
+          onSubmit={async (values) => {
+            await onUpdateUser(values);
+            setBody({
+              userName: user.user.userName ?? "",
+              firstName: user.user.firstName ?? "",
+              lastName: user.user.lastName ?? "",
+              email: user.user.email ?? "",
+              country: user.user.country ?? "",
+              address: user.user.address ?? "",
+              phone: user.user.phone ?? "",
+              bornDate: user.user.bornDate ?? "",
+              photoURL: user.user.photoURL ?? "",
+            });
+          }}
+        >
+          {({ handleChange, handleSubmit, values, isSubmiting }) => (
+            <Form>
+              <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
+                <TextInput
+                  name="firstName"
+                  type={"text"}
+                  label={"Nombre"}
+                  onChange={handleChange}
+                  value={values.firstName}
                 />
-              </div>
-            )}
-            {newPhoto && (
-              <div
-                onClick={handleClick}
-                className=" h-44 w-44 cursor-pointer rounded-full"
-              >
-                <img
-                  src={localPhoto}
-                  alt={"local foto"}
-                  className={
-                    "inline-block w-full h-full object-cover rounded-full ring-2 ring-white"
-                  }
+                <TextInput
+                  name="lastName"
+                  type={"text"}
+                  label={"Apellido"}
+                  onChange={handleChange}
+                  value={values.lastName}
                 />
+                <TextInput
+                  name="userName"
+                  type={"text"}
+                  label={"Username"}
+                  onChange={handleChange}
+                  value={values.userName}
+                />
+                <TextInput
+                  name="email"
+                  type={"email"}
+                  label={"Correo electronico"}
+                  onChange={handleChange}
+                  value={values.email}
+                />
+                <TextInput
+                  name="phone"
+                  type={"phone"}
+                  label={"Telefono"}
+                  onChange={handleChange}
+                  value={values.phone}
+                />
+                <TextInput
+                  name="country"
+                  type={"text"}
+                  label={"País"}
+                  onChange={handleChange}
+                  value={values.country}
+                />
+                <TextInput
+                  name="address"
+                  type={"text"}
+                  label={"Dirección"}
+                  onChange={handleChange}
+                  value={values.address}
+                />
+                <CalendarInput
+                  name="bornDate"
+                  label={"Fecha de nacimiento"}
+                  value={values.bornDate.substring(0, 10)}
+                  onChange={handleChange}
+                />
+                <div className="text-center">
+                  <BasicButton
+                    text={isSubmiting ? "Saving..." : "Guardar cambios"}
+                    type="submit"
+                    disabled={isSubmiting}
+                    onClick={handleSubmit}
+                  />
+                </div>
               </div>
-            )}
+            </Form>
+          )}
+        </Formik>
+        <div className="flex flex-col gap-4">
+          <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
+            <Label text={"Foto de perfil"} size={"16px"} />
+            <div>
+              {!user.user.photoURL && (
+                <FaUserCircle
+                  onClick={handleClick}
+                  size={150}
+                  fill={"#58585F"}
+                  className={` cursor-pointer duration-500 rounded-full`}
+                />
+              )}
+              {user.user.photoURL && (
+                <div
+                  onClick={() => setActive(!active)}
+                  onMouseEnter={() => setShowText(true)}
+                  onMouseLeave={() => setShowText(false)}
+                  className="relative flex items-center justify-center h-44 w-44 cursor-pointer rounded-full bg-black hover:opacity-90 transition-all ease-in-out"
+                >
+                  <p
+                    className={`absolute text-white ${
+                      showText ? null : "hidden z-10"
+                    } hover:flex z-10 transition-all ease-in-out`}
+                  >
+                    Ver foto
+                  </p>
+                  <img
+                    className={
+                      "inline-block w-full h-full object-cover rounded-full ring-4 ring-slate-200 hover:opacity-50 hover:blur-sm transition-all ease-in-out"
+                    }
+                    src={user.user.photoURL}
+                    alt={"foto_perfil"}
+                  />
+                </div>
+              )}
+            </div>
+            <IconButton onClick={handleClick} text={"Cambiar foto"}>
+              <FaUpload />
+            </IconButton>
+            <input
+              type={"file"}
+              ref={hiddenFileInput}
+              accept=".jpeg,.png,.jpg"
+              onChange={(e) => onUpdatePhoto(e.target.files[0])}
+              style={{ display: "none" }}
+            />
+            <Modal active={active} toggle={toggle}>
+              <div className="w-[400px] text-center flex flex-col items-center">
+                <H4
+                  color={"#0063c9"}
+                  text={`${user.user.firstName} ${user.user.lastName} `}
+                />
+                <img src={user.user.photoURL} alt="photo_profile" />
+              </div>
+            </Modal>
           </div>
-          <IconButton onClick={handleClick} text={"Cambiar foto"}>
-            <FaUpload />
-          </IconButton>
-          <input
-            type={"file"}
-            ref={hiddenFileInput}
-            accept=".jpeg,.png,.jpg"
-            onChange={(e) => handleSelectPhoto(e.target.files[0])}
-            style={{ display: "none" }}
-          />
-        </div>
-        <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
-          <TextInput
-            label={"Nombre"}
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-          />
-          <TextInput
-            label={"Correo electrónico"}
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-          />
-          <TextInput
-            label={"Telefono"}
-            value={user.phone}
-            onChange={(e) => setUser({ ...user, phone: e.target.value })}
-            type={"tel"}
-          />
-          <TextInput
-            label={"Domicilio"}
-            value={user.address}
-            onChange={(e) => setUser({ ...user, address: e.target.value })}
-          />
-          <CalendarInput
-            label={"Fecha de nacimiento"}
-            value={user.birthdate}
-            onChange={(e) => setUser({ ...user, birthdate: e.target.value })}
-          />
+          <div>
+            <Formik
+              enableReinitialize={true}
+              initialValues={password}
+              onSubmit={async (values) => {
+                await onUpdatePassword(values);
+                setPassword({
+                  currentPassword: "",
+                  newPassword: "",
+                  repeatNewPassword: "",
+                });
+              }}
+            >
+              {({ handleChange, handleSubmit, values, isSubmiting }) => (
+                <Form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-4 p-5 border-4 rounded-md border-slate-200"
+                >
+                  <H3 text={"Cambiar contraseña"} />
+                  <PasswordInput
+                    name={"currentPassword"}
+                    label={"Contraseña actual"}
+                    value={values.currentPassword}
+                    onChange={handleChange}
+                    isVisible={isVisible}
+                    setIsVisible={setIsVisible}
+                  />
+                  <PasswordInput
+                    name={"newPassword"}
+                    label={"Nueva Contraseña"}
+                    value={values.newPassword}
+                    onChange={handleChange}
+                    isVisible={isVisible}
+                    setIsVisible={setIsVisible}
+                  />
+                  <PasswordInput
+                    name={"repeatNewPassword"}
+                    label={"Repetir Nueva Contraseña"}
+                    value={values.repeatNewPassword}
+                    onChange={handleChange}
+                    isVisible={isVisible}
+                    setIsVisible={setIsVisible}
+                  />
+                  <div className="text-center">
+                    <BasicButton
+                      text={isSubmiting ? "Saving..." : "Cambiar contraseña"}
+                      type="submit"
+                      disabled={isSubmiting}
+                    />
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
       <span className="flex justify-center">

@@ -12,25 +12,37 @@ const Container = ({
   children,
   nameSection,
   _isHeaderButtons,
+  _needCancel,
+  _needSave,
   _onSave,
   _onCancel,
 }) => {
   return (
     <>
-      {_isHeaderButtons ? (
-        <Content>
-          <IconButton bgColor={"#EA5656"} text={"Volver"} onClick={_onCancel}>
-            <ArrowBack size={20} />
-          </IconButton>
-          <IconButton text={"Guardar"} onClick={_onSave}>
-            <FaSave />
-          </IconButton>
-        </Content>
-      ) : (
-        ""
-      )}
       <Contenedor width={width} height={height} bgColor={bgColor}>
-        <Title>{nameSection ? <H2 text={nameSection} /> : ""}</Title>
+        <div className="flex justify-between pb-4">
+          <Title>{nameSection ? <H2 text={nameSection} /> : ""}</Title>
+          {_isHeaderButtons ? (
+            <Content>
+              {_needCancel && (
+                <IconButton
+                  bgColor={"#EA5656"}
+                  text={"Volver"}
+                  onClick={_onCancel}
+                >
+                  <ArrowBack size={20} />
+                </IconButton>
+              )}
+              {_needSave && (
+                <IconButton text={"Guardar"} onClick={_onSave}>
+                  <FaSave />
+                </IconButton>
+              )}
+            </Content>
+          ) : (
+            ""
+          )}
+        </div>
         {children}
       </Contenedor>
     </>

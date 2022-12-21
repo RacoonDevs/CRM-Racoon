@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-const ContainerForm = ({ children }) => {
-  return <Form>{children}</Form>;
+const ContainerForm = ({ children, onSubmit }) => {
+  return <Form onSubmit={onSubmit}>{children}</Form>;
 };
 
 export default ContainerForm;
 
-const Form = styled.div`
+const Form = styled.form`
   max-width: 500px;
   min-width: 300px;
   width: 50%;

@@ -9,13 +9,13 @@ const TextInputAuth = ({
   type,
   name,
   text,
-  setValue,
+  onChange,
   value,
 }) => {
   return (
     <Container>
       <TextInput
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
         value={value}
         type={type}
         name={name}

@@ -3,7 +3,6 @@ import { Toaster, toast } from "react-hot-toast";
 import Container from "../../components/containers/Container";
 import TextInput from "../../components/inputs/TextInput";
 import { useNavigate, useParams } from "react-router-dom";
-import { changePasswordUsers, updateUsers } from "../../api/api";
 import Context from "../../AppContext/Context";
 import PasswordInput from "../../components/inputs/PasswordInput";
 import { HashLoader } from "react-spinners";
@@ -52,32 +51,32 @@ const EditUsers = () => {
       notifyError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
-      updateUsers(id, user)
-        .then((data) => {
-          setIsLoading(false);
-          if (data.users) {
-            users.filter((item) =>
-              item.id === id
-                ? ((item.name = user.name),
-                  (item.email = user.email),
-                  (item.status = user.status),
-                  (item.user_name = user.email))
-                : null
-            );
-            notify(data.users);
-          } else {
-            notifyError(
-              "Se ha producido un error al guardar la información intente más tarde."
-            );
-          }
-        })
-        .catch((err) => {
-          console.log("Failed to create user", err);
-          notifyError(
-            "Se ha producido un error al guardar la información intente más tarde."
-          );
-          setIsLoading(false);
-        });
+      // updateUsers(id, user)
+      //   .then((data) => {
+      //     setIsLoading(false);
+      //     if (data.users) {
+      //       users.filter((item) =>
+      //         item.id === id
+      //           ? ((item.name = user.name),
+      //             (item.email = user.email),
+      //             (item.status = user.status),
+      //             (item.user_name = user.email))
+      //           : null
+      //       );
+      //       notify(data.users);
+      //     } else {
+      //       notifyError(
+      //         "Se ha producido un error al guardar la información intente más tarde."
+      //       );
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log("Failed to create user", err);
+      //     notifyError(
+      //       "Se ha producido un error al guardar la información intente más tarde."
+      //     );
+      //     setIsLoading(false);
+      //   });
     }
   };
 
@@ -95,24 +94,24 @@ const EditUsers = () => {
           password: newPassword,
           updated_by: userData["datos_sesion"].id,
         };
-        changePasswordUsers(id, params)
-          .then((data) => {
-            setIsLoading(false);
-            if (data.users) {
-              notify(data.users);
-            } else {
-              notifyError(
-                "Se ha producido un error al guardar la información intente más tarde."
-              );
-            }
-          })
-          .catch((err) => {
-            console.log("Failed to create user", err);
-            notifyError(
-              "Se ha producido un error al guardar la información intente más tarde."
-            );
-            setIsLoading(false);
-          });
+        // changePasswordUsers(id, params)
+        //   .then((data) => {
+        //     setIsLoading(false);
+        //     if (data.users) {
+        //       notify(data.users);
+        //     } else {
+        //       notifyError(
+        //         "Se ha producido un error al guardar la información intente más tarde."
+        //       );
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.log("Failed to create user", err);
+        //     notifyError(
+        //       "Se ha producido un error al guardar la información intente más tarde."
+        //     );
+        //     setIsLoading(false);
+        //   });
       }
     }
   };

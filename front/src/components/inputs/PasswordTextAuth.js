@@ -9,7 +9,7 @@ const PasswordTextAuth = ({
   height,
   name,
   text,
-  setValue,
+  onChange,
   value,
   isVisible,
   setIsVisible,
@@ -17,7 +17,7 @@ const PasswordTextAuth = ({
   return (
     <Container>
       <TextInput
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
         type={isVisible ? "text" : "password"}
         value={value}
         name={name}

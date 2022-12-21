@@ -4,7 +4,7 @@ import { FaEye, FaPen, FaTrash, FaUserPlus } from "react-icons/fa";
 import { TiArrowBack } from "react-icons/ti";
 import IconButton from "../../components/buttons/IconButton";
 import { H4, Label } from "../Titles";
-import Modal from "../modal/Modal";
+import Modal from "../modal/modal";
 const Table = ({
   _isAddButton,
   onClickAddButton,

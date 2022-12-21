@@ -2,10 +2,11 @@ import React from "react";
 import styled from "@emotion/styled";
 import "./TextInputAuth.css";
 
-const TextInput = ({ width, height, type, label, value, onChange }) => {
+const TextInput = ({ width, height, type, label, value, onChange, name }) => {
   return (
     <Container>
       <InputText
+        name={name}
         value={value}
         type={type}
         width={width}
