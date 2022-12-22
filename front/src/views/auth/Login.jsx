@@ -1,75 +1,100 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import Context from "../../AppContext/Context";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Formik } from "formik";
+import { Toaster, toast } from "react-hot-toast";
+
 import ContainerForm from "../../components/containers/ContainerForm";
 import TextInputAuth from "../../components/inputs/TextInputAuth";
 import ContainerAuth from "../../components/containers/ContainerAuth";
 import BasicButton from "../../components/buttons/BasicButton";
 import { H1 } from "../../components/Titles";
 import Logo from "../../assets/img/Logo_Blanco.png";
+import { HashLoader } from "react-spinners";
+import PasswordTextAuth from "../../components/inputs/PasswordTextAuth";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [isError, setisError] = useState(false);
+  const { getLogin } = useContext(Context);
+  const [body, setBody] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const data = {
-    email: email,
-    password: pass,
-  };
+  // const autofill = () => {
+  //   setBody({ title: "racoon@racoon.mx", description: "racoonadmin" });
+  // };
 
-  const auth = () => {
-    navigate("/dashboard");
-    // const url = "http://localhost:8080/auth/login";
-    // fetch(url, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //   .then((response) => console.log(response))
-    //   .catch((err) => {
-    //     console.log("Failed to login", err);
-    //     setisError(true);
-    //   });
-    // axios
-    //   .post(url, {
-    //     headers: {
-    //       "Access-Control-Allow-Origin": "*",
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //     },
-    //     data,
-    //   })
-    //   .then(function (response) {
-    //     console.log("funciona", response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log("error detectado", error);
-    //   });
+  const notify = (text) => toast.success(text);
+  const notifyError = (text) => toast.error(text);
+
+  const onLogin = async (body) => {
+    setIsLoading(true);
+    if (!body.email || !body.password) {
+      notifyError("Todos los campos son obligatorios");
+      setIsLoading(false);
+    } else {
+      const result = await getLogin(body);
+      if (result?.error) {
+        notifyError(result.error);
+        setIsLoading(false);
+        return;
+      }
+      if (result?.data) {
+        notify(`Bienvenido de nuevo ${result.data.user.name}.`);
+        setIsLoading(false);
+      }
+      setIsLoading(false);
+      navigate("/");
+    }
   };
 
   return (
     <ContainerAuth>
-      <ContainerForm>
-        <img src={Logo} alt="logo_racoon" width={75} />
-        <H1 text={"Identificate"} color={"#fff"} />
-        <TextInputAuth
-          type={"mail"}
-          text={"Username"}
-          setValue={setEmail}
-          value={email}
-        />
-        <TextInputAuth
-          type={"password"}
-          text={"Password"}
-          setValue={setPass}
-          value={pass}
-        />
-        {isError && <p>Error</p>}
-        <BasicButton text={"Iniciar sesión"} onClick={auth} />
-      </ContainerForm>
+      <Formik
+        initialValues={body}
+        onSubmit={async (values) => {
+          await onLogin(values);
+        }}
+      >
+        {({ handleChange, handleSubmit, values, isSubmiting }) => (
+          <ContainerForm>
+            <img
+              src={Logo}
+              alt="logo_racoon"
+              width={75}
+              // onClick={() => autofill()}
+            />
+            <H1 text={"Identificate"} color={"#fff"} />
+            <TextInputAuth
+              name={"email"}
+              type={"email"}
+              text={"Correo electrónico"}
+              onChange={handleChange}
+              value={values.email}
+            />
+            <PasswordTextAuth
+              name="password"
+              text={"Contraseña"}
+              onChange={handleChange}
+              value={values.password}
+              isVisible={isVisible}
+              setIsVisible={setIsVisible}
+            />
+            {!isLoading && (
+              <BasicButton
+                onClick={handleSubmit}
+                text={isSubmiting ? "Login..." : "Iniciar sesión"}
+                type="submit"
+                disabled={isSubmiting}
+                // onClick={onLogin}
+              />
+            )}
+            <HashLoader color={"#0063C9"} size={28} loading={isLoading} />
+            {/* <HashLoader color={"#9013FE"} size={32} loading={isLoading} /> */}
+          </ContainerForm>
+        )}
+      </Formik>
+      <Toaster />
     </ContainerAuth>
   );
 };
