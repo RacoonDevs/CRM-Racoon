@@ -34,6 +34,7 @@ const Profile = () => {
     bornDate: user.user.bornDate ?? "",
     photoURL: user.user.photoURL ?? "",
   });
+
   const [password, setPassword] = useState({
     currentPassword: "",
     newPassword: "",
@@ -43,7 +44,7 @@ const Profile = () => {
   const [active, setActive] = useState(false);
   const [showText, setShowText] = useState(false);
 
-  const toggle = (item) => {
+  const toggle = () => {
     setActive(!active);
   };
 
@@ -107,6 +108,12 @@ const Profile = () => {
       setIsLoading(false);
       return notifyError("Todos los campos son obligatorios.");
     }
+    if (data.newPassword.length <= 7) {
+      setIsLoading(false);
+      return notifyError(
+        "La nueva contraseña debe contener al menos 8 caracteres."
+      );
+    }
     if (data.newPassword !== data.repeatNewPassword) {
       setIsLoading(false);
       return notifyError("La nueva contraseña no coincide.");
@@ -158,49 +165,56 @@ const Profile = () => {
         >
           {({ handleChange, handleSubmit, values, isSubmiting }) => (
             <Form>
-              <div className="border-4 rounded-md border-slate-200 p-5 grid gap-5">
-                <TextInput
-                  name="firstName"
-                  type={"text"}
-                  label={"Nombre"}
-                  onChange={handleChange}
-                  value={values.firstName}
-                />
-                <TextInput
-                  name="lastName"
-                  type={"text"}
-                  label={"Apellido"}
-                  onChange={handleChange}
-                  value={values.lastName}
-                />
-                <TextInput
-                  name="userName"
-                  type={"text"}
-                  label={"Username"}
-                  onChange={handleChange}
-                  value={values.userName}
-                />
-                <TextInput
-                  name="email"
-                  type={"email"}
-                  label={"Correo electronico"}
-                  onChange={handleChange}
-                  value={values.email}
-                />
-                <TextInput
-                  name="phone"
-                  type={"phone"}
-                  label={"Telefono"}
-                  onChange={handleChange}
-                  value={values.phone}
-                />
-                <TextInput
-                  name="country"
-                  type={"text"}
-                  label={"País"}
-                  onChange={handleChange}
-                  value={values.country}
-                />
+              <div className="border-4 rounded-md border-slate-200 p-5 grid gap-7">
+                <H3 text={"Mi información"} />
+                <div className="grid md:grid-cols-2 gap-4 ">
+                  <TextInput
+                    name="firstName"
+                    type={"text"}
+                    label={"Nombre"}
+                    onChange={handleChange}
+                    value={values.firstName}
+                  />
+                  <TextInput
+                    name="lastName"
+                    type={"text"}
+                    label={"Apellido"}
+                    onChange={handleChange}
+                    value={values.lastName}
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-4 ">
+                  <TextInput
+                    name="userName"
+                    type={"text"}
+                    label={"Username"}
+                    onChange={handleChange}
+                    value={values.userName}
+                  />
+                  <TextInput
+                    name="email"
+                    type={"email"}
+                    label={"Correo electronico"}
+                    onChange={handleChange}
+                    value={values.email}
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-4 ">
+                  <TextInput
+                    name="phone"
+                    type={"phone"}
+                    label={"Telefono"}
+                    onChange={handleChange}
+                    value={values.phone}
+                  />
+                  <TextInput
+                    name="country"
+                    type={"text"}
+                    label={"País"}
+                    onChange={handleChange}
+                    value={values.country}
+                  />
+                </div>
                 <TextInput
                   name="address"
                   type={"text"}
@@ -228,7 +242,7 @@ const Profile = () => {
         </Formik>
         <div className="flex flex-col gap-4">
           <div className=" flex flex-col items-center p-5 gap-3 border-4 rounded-md border-slate-200">
-            <Label text={"Foto de perfil"} size={"16px"} />
+            <H3 text={"Foto de perfil"} />
             <div>
               {!user.user.photoURL && (
                 <FaUserCircle
@@ -246,7 +260,7 @@ const Profile = () => {
                   className="relative flex items-center justify-center h-44 w-44 cursor-pointer rounded-full bg-black hover:opacity-90 transition-all ease-in-out"
                 >
                   <p
-                    className={`absolute text-white ${
+                    className={`absolute text-white pointer-events-none ${
                       showText ? null : "hidden z-10"
                     } hover:flex z-10 transition-all ease-in-out`}
                   >
@@ -273,12 +287,17 @@ const Profile = () => {
               style={{ display: "none" }}
             />
             <Modal active={active} toggle={toggle}>
-              <div className="w-[400px] text-center flex flex-col items-center">
+              <div className="w-[100%] max-w-[325px] md:max-w-[600px] lg:max-w-[800px] text-center flex flex-col items-center gap-4">
                 <H4
+                  size={"20px"}
                   color={"#0063c9"}
                   text={`${user.user.firstName} ${user.user.lastName} `}
                 />
-                <img src={user.user.photoURL} alt="photo_profile" />
+                <img
+                  className="max-h-[75vh]"
+                  src={user.user.photoURL}
+                  alt="photo_profile"
+                />
               </div>
             </Modal>
           </div>
@@ -296,40 +315,40 @@ const Profile = () => {
               }}
             >
               {({ handleChange, handleSubmit, values, isSubmiting }) => (
-                <Form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-4 p-5 border-4 rounded-md border-slate-200"
-                >
+                <Form className="flex flex-col gap-7 p-5 border-4 rounded-md border-slate-200">
                   <H3 text={"Cambiar contraseña"} />
                   <PasswordInput
-                    name={"currentPassword"}
+                    name="currentPassword"
                     label={"Contraseña actual"}
                     value={values.currentPassword}
                     onChange={handleChange}
                     isVisible={isVisible}
                     setIsVisible={setIsVisible}
                   />
-                  <PasswordInput
-                    name={"newPassword"}
-                    label={"Nueva Contraseña"}
-                    value={values.newPassword}
-                    onChange={handleChange}
-                    isVisible={isVisible}
-                    setIsVisible={setIsVisible}
-                  />
-                  <PasswordInput
-                    name={"repeatNewPassword"}
-                    label={"Repetir Nueva Contraseña"}
-                    value={values.repeatNewPassword}
-                    onChange={handleChange}
-                    isVisible={isVisible}
-                    setIsVisible={setIsVisible}
-                  />
+                  <div className="grid md:grid-cols-2 gap-4 ">
+                    <PasswordInput
+                      name="newPassword"
+                      label={"Nueva Contraseña"}
+                      value={values.newPassword}
+                      onChange={handleChange}
+                      isVisible={isVisible}
+                      setIsVisible={setIsVisible}
+                    />
+                    <PasswordInput
+                      name="repeatNewPassword"
+                      label={"Repetir Contraseña"}
+                      value={values.repeatNewPassword}
+                      onChange={handleChange}
+                      isVisible={isVisible}
+                      setIsVisible={setIsVisible}
+                    />
+                  </div>
                   <div className="text-center">
                     <BasicButton
                       text={isSubmiting ? "Saving..." : "Cambiar contraseña"}
                       type="submit"
                       disabled={isSubmiting}
+                      onClick={handleSubmit}
                     />
                   </div>
                 </Form>

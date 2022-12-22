@@ -22,6 +22,7 @@ export const getUserById = async (req, res) => {
       return res.status(404).json({
         message: "Usuario no encontrado",
       });
+    delete rows[0]["password"];
     res.json(rows[0]);
   } catch (error) {
     return res.status(500).json({ message: "Something went wrong" });

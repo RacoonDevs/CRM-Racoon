@@ -1,18 +1,18 @@
 input:focus ~ label,
 input:valid ~ label {
-  top: -23px;
-  font-size: 12px;
+  top: -30px;
+  font-size: 15px;
   color: #03a9f4;
 }
 select:focus ~ label,
 select:valid ~ label {
-  top: -23px;
-  font-size: 12px;
+  top: -30px;
+  font-size: 15px;
   color: #03a9f4;
 }
 textarea:focus ~ label,
 textarea:valid ~ label {
-  top: -23px;
-  font-size: 12px;
+  top: -30px;
+  font-size: 15px;
   color: #03a9f4;
 }

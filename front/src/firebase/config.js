@@ -30,6 +30,16 @@ export async function uploadFile(file) {
   return url;
 }
 
+export async function uploadLogoTeam(file) {
+  const name = uuidv4();
+
+  const storageRef = ref(storage, `logo_team/${name}`);
+
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
+  return url;
+}
+
 export function deleteProfileImage(file) {
   const desertRef = ref(storage, `photo_profile/${file}`);
 

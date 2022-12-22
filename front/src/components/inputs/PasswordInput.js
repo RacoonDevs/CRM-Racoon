@@ -49,7 +49,7 @@ const Container = styled.div`
 
 const InputText = styled.input`
   width: ${(props) => props.width ?? "100%"};
-  height: ${(props) => props.height ?? "35px"};
+  height: ${(props) => props.height ?? "40px"};
   border: 0;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

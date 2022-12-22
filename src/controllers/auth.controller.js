@@ -60,10 +60,10 @@ export const signUp = async (req, res) => {
         gender: "",
         status: "ACT",
         rol: 0,
-        company_id: 1,
+        team_id: 1,
         bornDate: "",
         photoURL: "",
-        bgSelected: "",
+        bgSelected: 0,
       },
     });
   } catch (error) {
@@ -71,7 +71,7 @@ export const signUp = async (req, res) => {
     console.log(error);
     return res
       .status(500)
-      .json({ message: "Something went wrong", error: error });
+      .json({ error: "Algo ha salido mal, intente más tarde." });
   }
 };
 
@@ -86,7 +86,7 @@ export const signIn = async (req, res) => {
 
     if (!userFound[0]) {
       return res.status(400).json({
-        error: "User not found.",
+        error: "Usuario no encontrado.",
       });
     }
 
@@ -97,7 +97,7 @@ export const signIn = async (req, res) => {
 
     if (!matchPassword) {
       return res.status(400).json({
-        error: "Password does not match.",
+        error: "La contraseña es incorrecta.",
       });
     }
 
@@ -110,8 +110,9 @@ export const signIn = async (req, res) => {
     res.json({ token: token, user });
   } catch (error) {
     console.log(Date.now() + ": " + "SignIn failed");
-    console.log(error);
-    return res.status(500).json({ message: "Something went wrong" });
+    return res
+      .status(500)
+      .json({ error: "Algo ha salido mal, intente más tarde." });
   }
 };
 
@@ -141,7 +142,9 @@ export const updateUser = async (req, res) => {
     res.json({ token: token, user });
   } catch (error) {
     console.log(Date.now() + error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      error: "No se ha podido actualizar la información, intentelos más tarde.",
+    });
   }
 };
 
@@ -175,7 +178,9 @@ export const updatePassword = async (req, res) => {
     res.json({ message: "Contraseña cambiada correctamente" });
   } catch (error) {
     console.log(Date.now() + error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      error: "La contraseña no ha podido ser cambiada, intentelos más tarde.",
+    });
   }
 };
 
@@ -210,11 +215,13 @@ export const deleteUserById = async (req, res) => {
 
     if (result.affectedRows <= 0)
       return res.status(404).json({
-        message: "User not found",
+        error: "User not found",
       });
 
     res.sendStatus(204);
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res
+      .status(500)
+      .json({ error: "Algo ha salido mal, intentelo más tarde." });
   }
 };

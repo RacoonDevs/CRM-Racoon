@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import Context from "../../AppContext/Context";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
+import { Toaster, toast } from "react-hot-toast";
 
 import ContainerForm from "../../components/containers/ContainerForm";
 import TextInputAuth from "../../components/inputs/TextInputAuth";
@@ -16,8 +17,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { getLogin } = useContext(Context);
   const [body, setBody] = useState({ email: "", password: "" });
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -25,21 +24,25 @@ const Login = () => {
   //   setBody({ title: "racoon@racoon.mx", description: "racoonadmin" });
   // };
 
+  const notify = (text) => toast.success(text);
+  const notifyError = (text) => toast.error(text);
+
   const onLogin = async (body) => {
     setIsLoading(true);
-    setIsError(false);
     if (!body.email || !body.password) {
-      setError("Todos los campos son obligatorios");
-      setIsError(true);
+      notifyError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
       const result = await getLogin(body);
-      if (result?.response.data.message === "Something went wrong") {
-        setError("Se ha producido un error mientra se iniciaba sesión.");
+      if (result?.error) {
+        notifyError(result.error);
         setIsLoading(false);
         return;
       }
-      setError(null);
+      if (result?.data) {
+        notify(`Bienvenido de nuevo ${result.data.user.name}.`);
+        setIsLoading(false);
+      }
       setIsLoading(false);
       navigate("/");
     }
@@ -48,15 +51,13 @@ const Login = () => {
   return (
     <ContainerAuth>
       <Formik
-        enableReinitialize={true}
         initialValues={body}
         onSubmit={async (values) => {
           await onLogin(values);
-          setBody({ title: "", description: "" });
         }}
       >
         {({ handleChange, handleSubmit, values, isSubmiting }) => (
-          <ContainerForm onSubmit={handleSubmit}>
+          <ContainerForm>
             <img
               src={Logo}
               alt="logo_racoon"
@@ -79,11 +80,10 @@ const Login = () => {
               isVisible={isVisible}
               setIsVisible={setIsVisible}
             />
-            {isError && <p className="text-red text-sm">{error}</p>}
             {!isLoading && (
               <BasicButton
                 onClick={handleSubmit}
-                text={isSubmiting ? "Saving..." : "Save"}
+                text={isSubmiting ? "Login..." : "Iniciar sesión"}
                 type="submit"
                 disabled={isSubmiting}
                 // onClick={onLogin}
@@ -94,6 +94,7 @@ const Login = () => {
           </ContainerForm>
         )}
       </Formik>
+      <Toaster />
     </ContainerAuth>
   );
 };

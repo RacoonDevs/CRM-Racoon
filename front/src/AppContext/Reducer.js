@@ -1,4 +1,10 @@
-import { SET_BG, GET_SIGNIN, GET_SIGNUP, GET_LOGOUT } from "./Types";
+import {
+  SET_BG,
+  GET_SIGNIN,
+  GET_SIGNUP,
+  GET_LOGOUT,
+  GET_CREATE_TEAM,
+} from "./Types";
 
 export default (state, action) => {
   const { payload, type } = action;
@@ -19,10 +25,16 @@ export default (state, action) => {
         ...state,
         bgSelected: payload,
       };
+    case GET_CREATE_TEAM:
+      return {
+        ...state,
+        team: payload,
+      };
     case GET_LOGOUT:
       return {
         ...state,
         user: [],
+        team: [],
         employees: [],
         bgSelected: 0,
       };

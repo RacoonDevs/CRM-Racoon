@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import Context from "../../AppContext/Context";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
 import { Formik } from "formik";
 
 import ContainerForm from "../../components/containers/ContainerForm";
@@ -22,14 +23,14 @@ const Register = () => {
     email: "",
     password: "",
   });
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  const notify = (text) => toast.success(text);
+  const notifyError = (text) => toast.error(text);
+
   const onRegister = async (body) => {
     setIsLoading(true);
-    setIsError(false);
     if (
       !body.email ||
       !body.password ||
@@ -37,18 +38,20 @@ const Register = () => {
       !body.firstName ||
       !body.lastName
     ) {
-      setError("Todos los campos son obligatorios");
-      setIsError(true);
+      notifyError("Todos los campos son obligatorios");
       setIsLoading(false);
     } else {
       const result = await getRegister(body);
-      if (result?.response.data.message === "Something went wrong") {
+      if (result?.error) {
+        notifyError(result.error);
         setIsLoading(false);
-        setError("Se ha producido un error mientra se iniciaba sesión.");
         return;
       }
+      if (result?.data) {
+        notify(`Bienvenido de nuevo ${result.data.user.name}.`);
+        setIsLoading(false);
+      }
       setIsLoading(false);
-      setError(null);
       navigate("/");
     }
   };
@@ -109,11 +112,10 @@ const Register = () => {
               isVisible={isVisible}
               setIsVisible={setIsVisible}
             />
-            {isError && <p className="text-red text-sm">{error}</p>}
             {!isLoading && (
               <BasicButton
                 onClick={handleSubmit}
-                text={isSubmiting ? "Saving..." : "Save"}
+                text={isSubmiting ? "Saving..." : "Registrarme"}
                 type="submit"
                 disabled={isSubmiting}
                 // onClick={onRegister}
@@ -124,6 +126,7 @@ const Register = () => {
           </ContainerForm>
         )}
       </Formik>
+      <Toaster />
     </ContainerAuth>
   );
 };

@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 
-export const H1 = ({ text, color, size }) => {
+export const H1 = ({ text, color, size, className }) => {
   const Text = styled.h1`
     color: ${color ? color : "#000"};
     font-size: ${size ? size : "3.5vh"};
     font-weight: bold;
   `;
 
-  return <Text>{text}</Text>;
+  return <Text className={`${className}`}>{text}</Text>;
 };
 
 export const H2 = ({ text, color, size }) => {

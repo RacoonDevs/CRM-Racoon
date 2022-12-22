@@ -1,19 +1,29 @@
 import React, { useReducer, useEffect } from "react";
 import Context from "./Context";
 import Reducer from "./Reducer";
-import { GET_LOGOUT, GET_SIGNIN, GET_SIGNUP, SET_BG } from "./Types";
+import {
+  GET_CREATE_TEAM,
+  GET_LOGOUT,
+  GET_SIGNIN,
+  GET_SIGNUP,
+  SET_BG,
+} from "./Types";
 import {
   deleteUserRequest,
+  handleCreateTeamRequest,
+  handleGetTeamRequest,
   handleIsAuth,
   handleLoginUser,
   handleRegisterUser,
   handleUpdatePassword,
+  handleUpdateTeamRequest,
   handleUpdateUser,
 } from "../api/api";
 
 const AppProvider = (props) => {
   const initialState = {
     user: [],
+    team: [],
     employees: [],
     bgSelected: 0,
   };
@@ -56,17 +66,16 @@ const AppProvider = (props) => {
 
   const getRegister = async (body) => {
     try {
-      const res = await handleRegisterUser(body);
-
-      localStorage.setItem("user", JSON.stringify(res.data));
-      dispatch({ type: GET_SIGNUP, payload: res.data });
-
-      if (window.location.pathname === "/auth") {
-        const url = window.localStorage.getItem("route");
-        if (url) {
-          window.location.replace(url);
-        }
-      }
+      const res = await handleRegisterUser(body)
+        .then((response) => {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          dispatch({ type: GET_SIGNUP, payload: response.data });
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
+      return res;
     } catch (err) {
       console.log("Ocurrio un error inesperado: ", err);
       return err.response.data;
@@ -75,17 +84,20 @@ const AppProvider = (props) => {
 
   const getLogin = async (body) => {
     try {
-      const res = await handleLoginUser(body);
+      const res = await handleLoginUser(body)
+        .then((response) => {
+          dispatch({ type: GET_SIGNIN, payload: response.data });
+          dispatch({ type: SET_BG, payload: response.data.user.bgSelected });
+          localStorage.setItem("user", JSON.stringify(response.data));
+          // await getTeam();
+          return response;
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
 
-      dispatch({ type: GET_SIGNIN, payload: res.data });
-      localStorage.setItem("user", JSON.stringify(res.data));
-
-      if (window.location.pathname === "/auth") {
-        const url = window.localStorage.getItem("route");
-        if (url) {
-          window.location.replace(url);
-        }
-      }
+      return res;
     } catch (err) {
       console.log("Ocurrio un error inesperado: ", err);
       return err.response.data;
@@ -93,13 +105,14 @@ const AppProvider = (props) => {
   };
 
   const getUpdateUser = async (body) => {
+    console.log(body);
     try {
       const res = await handleUpdateUser(
         state.user.token,
         body,
         state.user.user.id
       )
-        .then((response) => {
+        .then(async (response) => {
           localStorage.setItem("user", JSON.stringify(response.data));
           dispatch({ type: GET_SIGNIN, payload: response.data });
           if (response.data.user.bgSelected !== state.bgSelected) {
@@ -108,6 +121,7 @@ const AppProvider = (props) => {
               payload: response.data.user.bgSelected,
             });
           }
+          await getTeam();
           return response;
         })
         .catch((err) => {
@@ -152,8 +166,65 @@ const AppProvider = (props) => {
     }
   };
 
-  const getChangePassword = () => {
-    console.log("changin password");
+  const getTeam = async () => {
+    try {
+      const res = await handleGetTeamRequest(
+        state.user.token,
+        state.user.user.team_id
+      )
+        .then((response) => {
+          dispatch({ type: GET_CREATE_TEAM, payload: response.data });
+          return response;
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
+      return res;
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
+    }
+  };
+
+  const getCreateTeam = async (body) => {
+    try {
+      const res = await handleCreateTeamRequest(state.user.token, body)
+        .then((response) => {
+          dispatch({ type: GET_CREATE_TEAM, payload: response.data });
+          return response;
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
+      return res;
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
+    }
+  };
+
+  const getUpdateTeam = async (body) => {
+    try {
+      const res = await handleUpdateTeamRequest(
+        state.user.token,
+        body,
+        state.team.id
+      )
+        .then((response) => {
+          dispatch({ type: GET_CREATE_TEAM, payload: response.data });
+          return response;
+        })
+        .catch((err) => {
+          console.error(err);
+          return err.response.data;
+        });
+      return res;
+    } catch (err) {
+      console.log("Ocurrio un error inesperado: ", err);
+      return err.response.data;
+    }
   };
 
   const getCloseSesion = () => {
@@ -170,11 +241,14 @@ const AppProvider = (props) => {
         getUpdateUser,
         getUpdatePassword,
         getCloseSesion,
-        getChangePassword,
+        getCreateTeam,
+        getUpdateTeam,
         getDeleteUser,
+        getTeam,
         user: state.user,
         bgSelected: state.bgSelected,
         employees: state.employees,
+        team: state.team,
         dispatch,
       }}
     >
