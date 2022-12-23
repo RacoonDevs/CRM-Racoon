@@ -23,7 +23,7 @@ const CreateUsers = () => {
     created_by: userData["datos_sesion"].id,
   });
 
-  const notify = (text) => toast.success(text);
+  // const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
 
   const saveChanges = () => {

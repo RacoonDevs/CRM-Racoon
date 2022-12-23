@@ -7,7 +7,7 @@ import { listBg } from "../../components/Sidebar/Sidebar";
 import { H3 } from "../../components/Titles";
 
 const Config = () => {
-  const { getBgSelected, bgSelected, getUpdateUser } = useContext(Context);
+  const { getUpdateUser } = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
 
   const notify = (text) => toast.success(text);

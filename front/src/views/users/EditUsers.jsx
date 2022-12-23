@@ -42,7 +42,7 @@ const EditUsers = () => {
     }
   }, [users, id, userData]);
 
-  const notify = (text) => toast.success(text);
+  // const notify = (text) => toast.success(text);
   const notifyError = (text) => toast.error(text);
 
   const saveChanges = () => {
@@ -90,10 +90,10 @@ const EditUsers = () => {
         notifyError("Las contraseñas no son iguales");
         setIsLoading(false);
       } else {
-        const params = {
-          password: newPassword,
-          updated_by: userData["datos_sesion"].id,
-        };
+        // const params = {
+        //   password: newPassword,
+        //   updated_by: userData["datos_sesion"].id,
+        // };
         // changePasswordUsers(id, params)
         //   .then((data) => {
         //     setIsLoading(false);

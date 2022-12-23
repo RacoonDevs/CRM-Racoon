@@ -5,7 +5,6 @@ import Container from "../../components/containers/Container";
 import { HashLoader } from "react-spinners";
 import { H2, H3, H4 } from "../../components/Titles";
 import { Formik, Form } from "formik";
-import { async } from "@firebase/util";
 import TextInput from "../../components/inputs/TextInput";
 import BasicButton from "../../components/buttons/BasicButton";
 import astronaut from "../../assets/img/astronaut_moon.png";

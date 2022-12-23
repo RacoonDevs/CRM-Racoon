@@ -54,6 +54,7 @@ const Login = () => {
         initialValues={body}
         onSubmit={async (values) => {
           await onLogin(values);
+          setBody({ email: body.email, password: body.password });
         }}
       >
         {({ handleChange, handleSubmit, values, isSubmiting }) => (
@@ -89,7 +90,7 @@ const Login = () => {
                 // onClick={onLogin}
               />
             )}
-            <div>
+            <div className="flex gap-2 items-center">
               <p className="text-white font-bold">¿Aun no tienes una cuenta?</p>
               <Link
                 className="text-blue font-bold hover:underline hover:cursor-pointer"

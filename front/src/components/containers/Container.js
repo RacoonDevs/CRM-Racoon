@@ -82,10 +82,10 @@ const Title = styled.div`
   padding: 15px 0;
   width: 50%;
 `;
-const Content = styled.div`
-  padding: 0 0 15px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-`;
+// const Content = styled.div`
+//   padding: 0 0 15px;
+//   width: 100%;
+//   display: flex;
+//   justify-content: flex-end;
+//   gap: 10px;
+// `;
