@@ -151,7 +151,7 @@ const Teams = () => {
                   }
                 />
                 <div className="text-center">
-                  {isLoading ? (
+                  {!isLoading ? (
                     <BasicButton
                       text={isSubmiting ? "Saving..." : "Guardar cambios"}
                       type="submit"

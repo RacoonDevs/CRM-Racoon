@@ -105,7 +105,6 @@ const AppProvider = (props) => {
   };
 
   const getUpdateUser = async (body) => {
-    console.log(body);
     try {
       const res = await handleUpdateUser(
         state.user.token,
