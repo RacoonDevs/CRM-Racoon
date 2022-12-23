@@ -4,6 +4,7 @@ import { FaSave } from "react-icons/fa";
 import { H2 } from "../Titles";
 import { ArrowBack } from "../../assets/svg/icons";
 import IconButton from "../buttons/IconButton";
+import BasicButton from "../buttons/BasicButton";
 
 const Container = ({
   width,
@@ -14,31 +15,47 @@ const Container = ({
   _isHeaderButtons,
   _needCancel,
   _needSave,
+  _needOptionalButton,
+  _onOptionalButton,
+  _optionalButtonLabel,
   _onSave,
   _onCancel,
 }) => {
   return (
     <>
       <Contenedor width={width} height={height} bgColor={bgColor}>
-        <div className="flex justify-between pb-4">
+        <div className="flex justify-between pb-4 ">
           <Title>{nameSection ? <H2 text={nameSection} /> : ""}</Title>
           {_isHeaderButtons ? (
-            <Content>
+            <div className="flex justify-end gap-4 w-full">
               {_needCancel && (
-                <IconButton
-                  bgColor={"#EA5656"}
-                  text={"Volver"}
-                  onClick={_onCancel}
-                >
-                  <ArrowBack size={20} />
-                </IconButton>
+                <div>
+                  <IconButton
+                    bgColor={"#EA5656"}
+                    text={"Volver"}
+                    onClick={_onCancel}
+                  >
+                    <ArrowBack size={20} />
+                  </IconButton>
+                </div>
               )}
               {_needSave && (
-                <IconButton text={"Guardar"} onClick={_onSave}>
-                  <FaSave />
-                </IconButton>
+                <div>
+                  <IconButton text={"Guardar"} onClick={_onSave}>
+                    <FaSave />
+                  </IconButton>
+                </div>
               )}
-            </Content>
+              {_needOptionalButton && (
+                <div>
+                  <BasicButton
+                    bgColor={"green"}
+                    text={_optionalButtonLabel}
+                    onClick={_onOptionalButton}
+                  />
+                </div>
+              )}
+            </div>
           ) : (
             ""
           )}
