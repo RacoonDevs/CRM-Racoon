@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Context from "../../AppContext/Context";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -89,6 +89,15 @@ const Login = () => {
                 // onClick={onLogin}
               />
             )}
+            <div>
+              <p className="text-white font-bold">¿Aun no tienes una cuenta?</p>
+              <Link
+                className="text-blue font-bold hover:underline hover:cursor-pointer"
+                to={"/register"}
+              >
+                Registrate
+              </Link>
+            </div>
             <HashLoader color={"#0063C9"} size={28} loading={isLoading} />
             {/* <HashLoader color={"#9013FE"} size={32} loading={isLoading} /> */}
           </ContainerForm>
